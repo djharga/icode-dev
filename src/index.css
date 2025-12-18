@@ -3,32 +3,63 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    color-scheme: light;
+  }
+  .dark {
+    color-scheme: dark;
+  }
+
   body {
-    @apply bg-white dark:bg-secondary-900 text-secondary-900 dark:text-white font-arabic;
-    font-feature-settings: "kern" 1;
+    @apply bg-white dark:bg-secondary-950 text-secondary-900 dark:text-white font-arabic;
+    font-feature-settings: "kern" 1, "liga" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 100px;
+    scroll-padding-top: 96px;
   }
 
-  * {
-    transition-property: background-color, border-color, color, fill, stroke;
+  /* انتقالات ذكية فقط على العناصر التفاعلية */
+  a,
+  button,
+  input,
+  textarea,
+  select,
+  summary {
+    transition-property: background-color, border-color, color, opacity, box-shadow, transform;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 200ms;
+    transition-duration: 180ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 1ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 1ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
 @layer components {
   .glass {
-    @apply bg-white/10 dark:bg-white/5 backdrop-blur-xl border border-white/20 dark:border-white/10;
+    @apply bg-white/70 dark:bg-secondary-950/60 backdrop-blur-xl;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    box-shadow: 0 10px 30px rgba(2, 6, 23, 0.1);
   }
 
   .glass-strong {
-    @apply bg-white/20 dark:bg-white/10 backdrop-blur-2xl border border-white/30 dark:border-white/20;
+    @apply bg-white/85 dark:bg-secondary-950/75 backdrop-blur-2xl;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    box-shadow: 0 18px 60px rgba(2, 6, 23, 0.18);
   }
 
   .gradient-primary {
@@ -72,15 +103,12 @@
   .animation-delay-200 {
     animation-delay: 0.2s;
   }
-
   .animation-delay-400 {
     animation-delay: 0.4s;
   }
-
   .animation-delay-600 {
     animation-delay: 0.6s;
   }
-
   .animation-delay-800 {
     animation-delay: 0.8s;
   }
@@ -99,6 +127,25 @@
 
   .animate-slide-up {
     animation: fadeInUp 0.8s ease-out forwards;
+  }
+
+  .shadow-soft {
+    box-shadow: 0 20px 60px rgba(2, 6, 23, 0.18);
+  }
+
+  .bg-grid {
+    background-image: radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.25) 1px, transparent 0);
+    background-size: 28px 28px;
+  }
+
+  .bg-radial-spotlight {
+    background:
+      radial-gradient(800px circle at 20% 10%, rgba(14, 165, 233, 0.18), transparent 55%),
+      radial-gradient(700px circle at 80% 20%, rgba(99, 102, 241, 0.14), transparent 55%);
+  }
+
+  .card-border {
+    border: 1px solid rgba(148, 163, 184, 0.25);
   }
 }
 
