@@ -24,7 +24,14 @@
       "/terms",
       "/offers"
     ],
-    "puppeteerArgs": ["--no-sandbox", "--disable-setuid-sandbox"],
+    "puppeteerArgs": [
+      "--no-sandbox",
+      "--disable-setuid-sandbox"
+    ],
     "crawl": false
+  },
+  "dependencies": {
+    "baseline-browser-mapping": "^2.9.10",
+    "caniuse-lite": "^1.0.30001760"
   }
 }
