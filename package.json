@@ -29,5 +29,8 @@
       "--disable-setuid-sandbox"
     ],
     "crawl": false
+  },
+  "devDependencies": {
+    "vite": "^5.4.8"
   }
 }
