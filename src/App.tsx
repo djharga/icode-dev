@@ -6,6 +6,7 @@ import { ScrollToTop } from './components/layout/ScrollToTop';
 import { ProgressBar } from './components/layout/ProgressBar';
 import { PageTransition } from './components/layout/PageTransition';
 import { BackToTop } from './components/layout/BackToTop';
+
 import { Home } from './pages/Home';
 import { Services } from './pages/Services';
 import { Pricing } from './pages/Pricing';
@@ -16,17 +17,23 @@ import { Consultation } from './pages/Consultation';
 import { Terms } from './pages/Terms';
 import { Offers } from './pages/Offers';
 import { Portal } from './pages/Portal';
+
 import SEO from './seo';
 
 function App() {
   return (
     <ThemeProvider>
       <BrowserRouter>
+        {/* SEO المركزي – لازم يكون هنا */}
+        <SEO />
+
         <ScrollToTop />
         <ProgressBar />
         <BackToTop />
+
         <div className="min-h-screen flex flex-col">
           <Header />
+
           <main className="flex-1">
             <PageTransition>
               <Routes>
@@ -43,6 +50,7 @@ function App() {
               </Routes>
             </PageTransition>
           </main>
+
           <Footer />
         </div>
       </BrowserRouter>
