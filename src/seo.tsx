@@ -1,24 +1,10 @@
-import { useEffect, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 
-/**
- * SEO المركزي: يحقن title/description/canonical/OG/Twitter + robots
- * بدون تعديل كل صفحة.
- *
- * غيّر BASE_URL + SITE_NAME فقط.
- */
 const BASE_URL = 'https://ico.bolt.host';
 const SITE_NAME = 'ICODE';
-const DEFAULT_OG_IMAGE = `${BASE_URL}/og.jpg`; // اختياري
 
-type Meta = {
-  title: string;
-  description: string;
-  canonical: string;
-  ogImage?: string;
-  noindex?: boolean;
-};
+type Meta = { title: string; description: string; canonical: string };
 
 const ROUTES: Record<string, Meta> = {
   '/': {
@@ -72,75 +58,69 @@ const FALLBACK: Meta = {
   canonical: `${BASE_URL}/`,
 };
 
-function normalizePath(pathname: string) {
-  // إزالة السلاش الأخير لو موجود
-  if (pathname.length > 1 && pathname.endsWith('/')) return pathname.slice(0, -1);
-  return pathname;
-}
-
-function getMeta(pathname: string): Meta {
-  const p = normalizePath(pathname);
-
-  // تطابق مباشر
-  if (ROUTES[p]) return ROUTES[p];
-
-  // دعم مسارات ديناميكية (لو عندك مستقبلاً /portfolio/:id مثلاً)
-  // هنا نعمل fallback على أقرب prefix معروف
-  const candidates = Object.keys(ROUTES).filter((k) => k !== '/' && p.startsWith(k + '/'));
-  if (candidates.length) {
-    const best = candidates.sort((a, b) => b.length - a.length)[0];
-    return ROUTES[best];
-  }
-
-  return FALLBACK;
+function normalizePath(p: string) {
+  if (p.length > 1 && p.endsWith('/')) return p.slice(0, -1);
+  return p;
 }
 
 export default function SEO() {
-  const { pathname } = useLocation();
+  const [path, setPath] = useState(() => normalizePath(window.location.pathname));
 
-  const meta = useMemo(() => getMeta(pathname), [pathname]);
+  // يراقب تغيّر المسار حتى لو Router داخلي
+  useEffect(() => {
+    const onPop = () => setPath(normalizePath(window.location.pathname));
+    window.addEventListener('popstate', onPop);
 
-  // Canonical ديناميكي حتى لو صفحات SPA
-  const canonical = meta.canonical || `${BASE_URL}${pathname}`;
+    // patch بسيط لالتقاط pushState/replaceState
+    const _push = history.pushState;
+    const _replace = history.replaceState;
 
-  // تحديث lang/dir تلقائيًا (اختياري لكن مفيد عربي)
+    history.pushState = function (...args) {
+      _push.apply(history, args as any);
+      onPop();
+    } as any;
+
+    history.replaceState = function (...args) {
+      _replace.apply(history, args as any);
+      onPop();
+    } as any;
+
+    return () => {
+      window.removeEventListener('popstate', onPop);
+      history.pushState = _push as any;
+      history.replaceState = _replace as any;
+    };
+  }, []);
+
+  const meta = useMemo(() => ROUTES[path] ?? FALLBACK, [path]);
+  const fullTitle = `${meta.title} | ${SITE_NAME}`;
+
   useEffect(() => {
     document.documentElement.setAttribute('lang', 'ar');
     document.documentElement.setAttribute('dir', 'rtl');
   }, []);
 
-  const fullTitle = `${meta.title} | ${SITE_NAME}`;
-  const ogImage = meta.ogImage || DEFAULT_OG_IMAGE;
-
   return (
     <Helmet>
       <title>{fullTitle}</title>
       <meta name="description" content={meta.description} />
-      <link rel="canonical" href={canonical} />
+      <link rel="canonical" href={meta.canonical} />
 
-      {/* robots */}
-      {meta.noindex ? (
-        <meta name="robots" content="noindex,nofollow" />
-      ) : (
-        <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
-      )}
+      <meta
+        name="robots"
+        content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"
+      />
 
-      {/* Open Graph */}
       <meta property="og:site_name" content={SITE_NAME} />
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={meta.description} />
       <meta property="og:type" content="website" />
-      <meta property="og:url" content={canonical} />
-      <meta property="og:locale" content="ar_AR" />
-      {ogImage && <meta property="og:image" content={ogImage} />}
+      <meta property="og:url" content={meta.canonical} />
 
-      {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={meta.description} />
-      {ogImage && <meta name="twitter:image" content={ogImage} />}
 
-      {/* تحسينات إضافية */}
       <meta name="theme-color" content="#0ea5e9" />
     </Helmet>
   );
