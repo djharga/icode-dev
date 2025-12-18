@@ -16,6 +16,7 @@ import { Consultation } from './pages/Consultation';
 import { Terms } from './pages/Terms';
 import { Offers } from './pages/Offers';
 import { Portal } from './pages/Portal';
+import SEO from './seo';
 
 function App() {
   return (
