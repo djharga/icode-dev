@@ -1,11 +1,7 @@
-# robots.txt for https://ico.bolt.host/
-# Last updated: 2025-12-20
-# Default: allow everything, block sensitive/common non-content paths, and prevent index of internal build artifacts.
-
 User-agent: *
 Allow: /
 
-# Block admin/auth/system paths (edit/remove حسب مسارات مشروعك)
+# Block sensitive/system paths
 Disallow: /admin/
 Disallow: /dashboard/
 Disallow: /account/
@@ -18,21 +14,8 @@ Disallow: /verify/
 Disallow: /settings/
 Disallow: /api/
 Disallow: /_next/
-Disallow: /assets-private/
 Disallow: /private/
-Disallow: /tmp/
-Disallow: /staging/
 Disallow: /.git/
 Disallow: /.env
-Disallow: /env/
-Disallow: /server/
 
-# Block query-result style pages (اختياري لو عندك صفحات بحث)
-Disallow: /*?*
-Disallow: /search
-
-# Allow common well-known endpoints
-Allow: /.well-known/
-
-# If you have a sitemap, set it here:
 Sitemap: https://ico.bolt.host/sitemap.xml
