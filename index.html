@@ -1,21 +1,29 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
   <head>
+    <!-- Basic Meta -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="google-site-verification" content="Ed3HarTJF8fz06SlMgoIEQ7r8arJviyzYEEpL1AD6TU" />
 
+    <!-- Google Site Verification -->
+    <meta
+      name="google-site-verification"
+      content="Ed3HarTJF8fz06SlMgoIEQ7r8arJviyzYEEpL1AD6TU"
+    />
+
+    <!-- SEO -->
     <title>icode | استوديو برمجة وتطوير مواقع وتطبيقات احترافية</title>
     <meta
       name="description"
       content="icode استوديو برمجة احترافي متخصص في تصميم وتطوير المواقع، تطبيقات الويب والموبايل، والأنظمة المخصصة."
     />
-
     <link rel="canonical" href="https://ico.bolt.host/" />
     <meta name="robots" content="index,follow" />
 
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
 
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -33,19 +41,25 @@
     />
     <meta property="og:image" content="https://ico.bolt.host/og-image.jpg" />
 
-    <!-- Google AdSense -->
+    <!-- ================= Google Analytics (Google tag) ================= -->
     <script
       async
-      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5212879065967651"
-      crossorigin="anonymous">
+      src="https://www.googletagmanager.com/gtag/js?id=G-XX1CZZHJ9W">
     </script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XX1CZZHJ9W');
+    </script>
+    <!-- ================================================================= -->
 
-    <!-- Vite entry (TSX) -->
+    <!-- Vite + React (TypeScript) -->
     <script type="module" src="/src/main.tsx"></script>
   </head>
 
   <body>
-    <!-- SEO Fallback -->
+    <!-- SEO Fallback (للمحركات) -->
     <main
       style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;"
     >
@@ -56,6 +70,9 @@
       </p>
     </main>
 
+    <!-- React Root -->
     <div id="root"></div>
+
+    <noscript>يرجى تفعيل JavaScript لعرض الموقع.</noscript>
   </body>
 </html>
