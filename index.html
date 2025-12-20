@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
   <head>
-    <!-- Basic Meta -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -20,9 +19,6 @@
     <link rel="canonical" href="https://ico.bolt.host/" />
     <meta name="robots" content="index,follow" />
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -31,48 +27,38 @@
       rel="stylesheet"
     />
 
-    <!-- Open Graph -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://ico.bolt.host/" />
-    <meta property="og:title" content="icode | استوديو برمجة احترافي" />
-    <meta
-      property="og:description"
-      content="نحوّل أفكارك إلى حلول رقمية: مواقع، تطبيقات، وأنظمة."
-    />
-    <meta property="og:image" content="https://ico.bolt.host/og-image.jpg" />
-
-    <!-- ================= Google Analytics (Google tag) ================= -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-XX1CZZHJ9W">
-    </script>
+    <!-- ================= Google Tag Manager ================= -->
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-XX1CZZHJ9W');
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-56J9S7S4');
     </script>
-    <!-- ================================================================= -->
+    <!-- ====================================================== -->
 
-    <!-- Vite + React (TypeScript) -->
+    <!-- Vite + React -->
     <script type="module" src="/src/main.tsx"></script>
   </head>
 
   <body>
-    <!-- SEO Fallback (للمحركات) -->
-    <main
-      style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;"
-    >
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+      <iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-56J9S7S4"
+        height="0"
+        width="0"
+        style="display:none;visibility:hidden">
+      </iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <!-- SEO Fallback -->
+    <main style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">
       <h1>استوديو برمجة احترافي لتطوير المواقع والتطبيقات</h1>
-      <h2>تصميم وتطوير حلول رقمية مخصصة</h2>
-      <p>
-        icode شركة متخصصة في بناء مواقع وتطبيقات وأنظمة برمجية باحتراف.
-      </p>
+      <p>icode شركة متخصصة في الحلول الرقمية.</p>
     </main>
 
-    <!-- React Root -->
     <div id="root"></div>
-
-    <noscript>يرجى تفعيل JavaScript لعرض الموقع.</noscript>
   </body>
 </html>
