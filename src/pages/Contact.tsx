@@ -1,11 +1,9 @@
-// src/pages/Contact.tsx (FULL UPDATED — Funnel + GTM + WhatsApp CTA + budget EGP + no overflow)
+// src/pages/Contact.tsx (SAFE VERSION — no custom Input/Select/TextArea, no Button className, no break)
+// Copy-Paste as-is
 
 import { useState, FormEvent } from 'react';
-import { Github, Linkedin, Twitter, MapPin, Send, ArrowLeft, Phone } from 'lucide-react';
+import { Phone, MapPin, Send, ArrowLeft, Github, Linkedin, Twitter } from 'lucide-react';
 import { Card } from '../components/ui/Card';
-import { Input } from '../components/ui/Input';
-import { TextArea } from '../components/ui/TextArea';
-import { Select } from '../components/ui/Select';
 import { Button } from '../components/ui/Button';
 import { supabase } from '../lib/supabase';
 
@@ -21,7 +19,6 @@ function pushDL(event: string, payload: Record<string, unknown> = {}) {
 }
 
 export function Contact() {
-  // ===== Funnel / WhatsApp =====
   const WHATSAPP_PHONE = '201507619503';
   const WHATSAPP_PREFILL = encodeURIComponent(
     [
@@ -48,22 +45,21 @@ export function Contact() {
   const [error, setError] = useState('');
 
   const projectTypes = [
-    { value: 'موقع إلكتروني', label: 'موقع إلكتروني' },
-    { value: 'تطبيق ويب', label: 'تطبيق ويب' },
-    { value: 'تطبيق موبايل', label: 'تطبيق موبايل' },
-    { value: 'نظام مخصص', label: 'نظام مخصص' },
-    { value: 'استشارة تقنية', label: 'استشارة تقنية' },
-    { value: 'أخرى', label: 'أخرى' },
+    'موقع إلكتروني',
+    'تطبيق ويب',
+    'تطبيق موبايل',
+    'نظام مخصص',
+    'استشارة تقنية',
+    'أخرى',
   ];
 
-  // تحويل العملة إلى جنيه مصري (بدون "ريال")
   const budgetRanges = [
-    { value: '', label: 'اختر الميزانية التقريبية (اختياري)' },
-    { value: 'أقل من 10,000 جنيه', label: 'أقل من 10,000 جنيه' },
-    { value: '10,000 - 25,000 جنيه', label: '10,000 - 25,000 جنيه' },
-    { value: '25,000 - 50,000 جنيه', label: '25,000 - 50,000 جنيه' },
-    { value: '50,000 - 100,000 جنيه', label: '50,000 - 100,000 جنيه' },
-    { value: 'أكثر من 100,000 جنيه', label: 'أكثر من 100,000 جنيه' },
+    '',
+    'أقل من 10,000 جنيه',
+    '10,000 - 25,000 جنيه',
+    '25,000 - 50,000 جنيه',
+    '50,000 - 100,000 جنيه',
+    'أكثر من 100,000 جنيه',
   ];
 
   const handleSubmit = async (e: FormEvent) => {
@@ -76,7 +72,6 @@ export function Contact() {
 
     try {
       const { error: submitError } = await supabase.from('contacts').insert([formData]);
-
       if (submitError) throw submitError;
 
       setSuccess(true);
@@ -99,23 +94,6 @@ export function Contact() {
     }
   };
 
-  const contactInfo = [
-    {
-      icon: Phone,
-      label: 'واتساب',
-      value: '+20 150 761 9503',
-      href: WHATSAPP_LINK,
-      external: true,
-    },
-    {
-      icon: MapPin,
-      label: 'الموقع',
-      value: 'القاهرة، مصر',
-      href: '#',
-      external: false,
-    },
-  ];
-
   const socialLinks = [
     { icon: Github, href: 'https://github.com', label: 'GitHub' },
     { icon: Linkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
@@ -130,10 +108,9 @@ export function Contact() {
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">تواصل معنا</h1>
             <p className="text-xl md:text-2xl leading-relaxed text-white/90">
-              نحن هنا للإجابة على أسئلتك ومساعدتك في تحويل أفكارك إلى واقع رقمي
+              ارسل تفاصيل مشروعك وسنرد خلال 24 ساعة. للعاجل: واتساب.
             </p>
 
-            {/* Funnel CTA */}
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href={WHATSAPP_LINK}
@@ -150,11 +127,7 @@ export function Contact() {
                 href="#contact-form"
                 onClick={() => pushDL('nav_click', { target: '#contact-form', source: 'contact_hero' })}
               >
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-white/70 text-white bg-white/10 hover:bg-white/20 hover:text-white hover:border-white/90"
-                >
+                <Button size="lg" variant="outline">
                   ارسل رسالة
                 </Button>
               </a>
@@ -171,7 +144,7 @@ export function Contact() {
             <div id="contact-form">
               <h2 className="text-3xl font-bold text-secondary-900 dark:text-white mb-6">أرسل لنا رسالة</h2>
               <p className="text-lg text-secondary-600 dark:text-secondary-300 mb-8">
-                املأ النموذج وسنتواصل معك في أقرب وقت ممكن
+                املأ النموذج وسنعود لك بأقرب وقت.
               </p>
 
               {success && (
@@ -188,106 +161,151 @@ export function Contact() {
                 </div>
               )}
 
-              <form
-                onSubmit={handleSubmit}
-                className="space-y-6"
-                onFocusCapture={() => pushDL('lead_form_focus', { source: 'contact_form' })}
-              >
-                <Input
-                  label="الاسم الكامل"
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="أدخل اسمك الكامل"
-                />
+              <Card className="p-8" hover={false}>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Name */}
+                  <div>
+                    <label className="block text-sm font-bold text-secondary-900 dark:text-white mb-2">
+                      الاسم الكامل
+                    </label>
+                    <input
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      placeholder="أدخل اسمك الكامل"
+                      className="w-full rounded-xl px-4 py-3 bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-700 outline-none text-secondary-900 dark:text-white"
+                    />
+                  </div>
 
-                <Input
-                  label="البريد الإلكتروني"
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  placeholder="example@email.com"
-                />
+                  {/* Email */}
+                  <div>
+                    <label className="block text-sm font-bold text-secondary-900 dark:text-white mb-2">
+                      البريد الإلكتروني
+                    </label>
+                    <input
+                      required
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      placeholder="example@email.com"
+                      className="w-full rounded-xl px-4 py-3 bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-700 outline-none text-secondary-900 dark:text-white"
+                    />
+                  </div>
 
-                <Select
-                  label="نوع المشروع"
-                  required
-                  value={formData.project_type}
-                  onChange={(e) => setFormData({ ...formData, project_type: e.target.value })}
-                  options={projectTypes}
-                />
+                  {/* Project Type */}
+                  <div>
+                    <label className="block text-sm font-bold text-secondary-900 dark:text-white mb-2">
+                      نوع المشروع
+                    </label>
+                    <select
+                      required
+                      value={formData.project_type}
+                      onChange={(e) => setFormData({ ...formData, project_type: e.target.value })}
+                      className="w-full rounded-xl px-4 py-3 bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-700 outline-none text-secondary-900 dark:text-white"
+                    >
+                      {projectTypes.map((t) => (
+                        <option key={t} value={t}>
+                          {t}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-                <Select
-                  label="الميزانية التقريبية (اختياري)"
-                  value={formData.budget}
-                  onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                  options={budgetRanges}
-                />
+                  {/* Budget */}
+                  <div>
+                    <label className="block text-sm font-bold text-secondary-900 dark:text-white mb-2">
+                      الميزانية التقريبية (اختياري)
+                    </label>
+                    <select
+                      value={formData.budget}
+                      onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
+                      className="w-full rounded-xl px-4 py-3 bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-700 outline-none text-secondary-900 dark:text-white"
+                    >
+                      {budgetRanges.map((b) => (
+                        <option key={b || 'none'} value={b}>
+                          {b || 'اختر الميزانية التقريبية'}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-                <TextArea
-                  label="رسالتك"
-                  required
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  placeholder="أخبرنا عن مشروعك ومتطلباتك..."
-                  rows={6}
-                />
+                  {/* Message */}
+                  <div>
+                    <label className="block text-sm font-bold text-secondary-900 dark:text-white mb-2">
+                      رسالتك
+                    </label>
+                    <textarea
+                      required
+                      rows={6}
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      placeholder="أخبرنا عن مشروعك ومتطلباتك..."
+                      className="w-full rounded-xl px-4 py-3 bg-white dark:bg-secondary-900 border border-secondary-200 dark:border-secondary-700 outline-none text-secondary-900 dark:text-white resize-none"
+                    />
+                  </div>
 
-                <Button type="submit" size="lg" className="w-full" disabled={loading} icon={Send}>
-                  {loading ? 'جاري الإرسال...' : 'إرسال الرسالة'}
-                </Button>
-
-                {/* Secondary CTA (WhatsApp) */}
-                <a
-                  href={WHATSAPP_LINK}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="block"
-                  onClick={() => pushDL('lead_click', { source: 'contact_form_whatsapp' })}
-                >
-                  <Button className="w-full" variant="outline" size="lg">
-                    بدلاً من ذلك: افتح واتساب وحدد النطاق
+                  <Button type="submit" size="lg" className="w-full" disabled={loading} icon={Send}>
+                    {loading ? 'جاري الإرسال...' : 'إرسال الرسالة'}
                   </Button>
-                </a>
-              </form>
+
+                  <a
+                    href={WHATSAPP_LINK}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block"
+                    onClick={() => pushDL('lead_click', { source: 'contact_form_whatsapp' })}
+                  >
+                    <Button className="w-full" variant="outline" size="lg">
+                      بدلاً من ذلك: افتح واتساب وحدد النطاق
+                    </Button>
+                  </a>
+                </form>
+              </Card>
             </div>
 
-            {/* CONTACT INFO */}
+            {/* INFO */}
             <div>
               <h2 className="text-3xl font-bold text-secondary-900 dark:text-white mb-6">معلومات التواصل</h2>
               <p className="text-lg text-secondary-600 dark:text-secondary-300 mb-8">
-                يمكنك التواصل معنا مباشرة عبر القنوات التالية
+                تواصل مباشر — أسرع قناة هي واتساب.
               </p>
 
               <div className="space-y-6 mb-12">
-                {contactInfo.map((info, index) => (
-                  <Card key={index} className="p-6" hover>
-                    <a
-                      href={info.href}
-                      className="flex items-center gap-4 group"
-                      target={info.external ? '_blank' : undefined}
-                      rel={info.external ? 'noopener noreferrer' : undefined}
-                      onClick={() => pushDL('lead_click', { source: 'contact_info', channel: info.label })}
-                    >
-                      <div className="w-14 h-14 gradient-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <info.icon className="w-7 h-7 text-white" />
-                      </div>
-                      <div>
-                        <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-1">{info.label}</p>
-                        <p className="text-lg font-semibold text-secondary-900 dark:text-white">{info.value}</p>
-                      </div>
-                    </a>
-                  </Card>
-                ))}
+                <Card className="p-6" hover>
+                  <a
+                    href={WHATSAPP_LINK}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-4 group"
+                    onClick={() => pushDL('lead_click', { source: 'contact_info', channel: 'واتساب' })}
+                  >
+                    <div className="w-14 h-14 gradient-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <Phone className="w-7 h-7 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-1">واتساب</p>
+                      <p className="text-lg font-semibold text-secondary-900 dark:text-white" dir="ltr">
+                        +20 150 761 9503
+                      </p>
+                    </div>
+                  </a>
+                </Card>
+
+                <Card className="p-6" hover>
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 gradient-primary rounded-xl flex items-center justify-center">
+                      <MapPin className="w-7 h-7 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-secondary-600 dark:text-secondary-400 mb-1">الموقع</p>
+                      <p className="text-lg font-semibold text-secondary-900 dark:text-white">القاهرة، مصر</p>
+                    </div>
+                  </div>
+                </Card>
               </div>
 
-              {/* SOCIAL */}
               <div>
-                <h3 className="text-xl font-bold text-secondary-900 dark:text-white mb-6">
-                  تابعنا على وسائل التواصل
-                </h3>
+                <h3 className="text-xl font-bold text-secondary-900 dark:text-white mb-6">تابعنا</h3>
                 <div className="flex gap-4">
                   {socialLinks.map((social, index) => (
                     <a
@@ -305,34 +323,23 @@ export function Contact() {
                 </div>
               </div>
 
-              {/* RESPONSE TIME */}
               <Card className="p-8 mt-12" glass>
                 <h3 className="text-xl font-bold text-secondary-900 dark:text-white mb-4">وقت الاستجابة</h3>
                 <p className="text-secondary-600 dark:text-secondary-300 leading-relaxed">
-                  نرد على جميع الاستفسارات خلال 24 ساعة في أيام العمل. للاستفسارات العاجلة، تواصل عبر واتساب.
+                  نرد خلال 24 ساعة في أيام العمل. للعاجل: واتساب.
                 </p>
 
-                <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                <div className="mt-6">
                   <a
                     href={WHATSAPP_LINK}
                     target="_blank"
                     rel="noreferrer"
                     onClick={() => pushDL('lead_click', { source: 'contact_response_card_whatsapp' })}
-                    className="flex-1"
                   >
                     <Button className="w-full" icon={ArrowLeft}>
                       واتساب الآن
                     </Button>
                   </a>
-                  <Link
-                    to="/offer"
-                    onClick={() => pushDL('nav_click', { target: '/offer', source: 'contact_response_card' })}
-                    className="flex-1"
-                  >
-                    <Button className="w-full" variant="outline">
-                      شوف عرض 7 أيام
-                    </Button>
-                  </Link>
                 </div>
               </Card>
             </div>
@@ -350,15 +357,15 @@ export function Contact() {
               {[
                 {
                   q: 'كم يستغرق تنفيذ مشروع موقع إلكتروني؟',
-                  a: 'يعتمد على حجم المشروع وتعقيده، عادة من 2-8 أسابيع. ويمكن تنفيذ نسخة سريعة بعرض 7 أيام حسب النطاق.',
+                  a: 'حسب النطاق، عادة 2-8 أسابيع. ويمكن تنفيذ نسخة سريعة بعرض 7 أيام حسب المتطلبات.',
                 },
                 {
-                  q: 'هل تقدمون خدمات الصيانة بعد التسليم؟',
-                  a: 'نعم، نقدم صيانة ودعم حسب احتياجك وخطة المشروع.',
+                  q: 'هل تقدمون صيانة بعد التسليم؟',
+                  a: 'نعم، نقدم صيانة ودعم حسب خطة المشروع.',
                 },
                 {
-                  q: 'هل يمكنني رؤية أمثلة من أعمالكم؟',
-                  a: 'نعم، راجع صفحة الأعمال لرؤية مشاريع مختارة.',
+                  q: 'هل يمكن رؤية أمثلة من الأعمال؟',
+                  a: 'نعم، افتح صفحة الأعمال لرؤية مشاريع مختارة.',
                 },
               ].map((faq, index) => (
                 <Card key={index} className="p-6" hover>
@@ -381,7 +388,6 @@ export function Contact() {
               ))}
             </div>
 
-            {/* Final CTA */}
             <div className="mt-12">
               <Link to="/offer" onClick={() => pushDL('nav_click', { target: '/offer', source: 'contact_footer' })}>
                 <Button size="lg" icon={ArrowLeft}>
@@ -395,4 +401,3 @@ export function Contact() {
     </div>
   );
 }
- 
