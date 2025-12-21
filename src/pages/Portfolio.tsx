@@ -161,9 +161,14 @@ export function Portfolio() {
                 rel="noreferrer"
                 onClick={() => pushDL('lead_click', { source: 'portfolio_hero_whatsapp' })}
               >
-                <Button size="lg" variant="outline">
-                  تواصل سريع
-                </Button>
+<Button
+  size="lg"
+  variant="outline"
+  className="border-white/70 text-white bg-white/10 hover:bg-white/20 hover:text-white hover:border-white/90"
+>
+  تواصل سريع
+</Button>
+
               </a>
             </div>
           </div>
