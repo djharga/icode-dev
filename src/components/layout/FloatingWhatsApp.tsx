@@ -1,3 +1,5 @@
+// src/components/layout/FloatingWhatsApp.tsx (FULL UPDATED — no overlap + no click issues + premium motion)
+
 import { MessageCircle } from 'lucide-react';
 
 type Props = {
@@ -7,7 +9,6 @@ type Props = {
 };
 
 function pushDL(event: string, payload: Record<string, unknown> = {}) {
-  // GTM safe
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const w = window as any;
   if (!w.dataLayer) w.dataLayer = [];
@@ -29,7 +30,7 @@ export function FloatingWhatsApp({
       aria-label="تواصل واتساب"
       onClick={() => pushDL('lead_click_whatsapp', { source: 'floating_whatsapp' })}
       className={[
-        'fixed z-[60] bottom-6',
+        'fixed z-[60] bottom-24', // فوق BackToTop
         position === 'left' ? 'left-6' : 'right-6',
         'group',
       ].join(' ')}
@@ -43,6 +44,8 @@ export function FloatingWhatsApp({
           'transition-[transform,box-shadow,background-color] duration-300',
           '[transition-timing-function:cubic-bezier(0.16,1,0.3,1)]',
           'hover:-translate-y-0.5 hover:shadow-xl hover:shadow-emerald-600/30',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/70 focus-visible:ring-offset-2',
+          'focus-visible:ring-offset-white dark:focus-visible:ring-offset-secondary-900',
         ].join(' ')}
       >
         <span className="grid place-items-center w-10 h-10 rounded-xl bg-white/15">
@@ -54,8 +57,8 @@ export function FloatingWhatsApp({
           <div className="text-xs text-white/85">رد سريع خلال اليوم</div>
         </div>
 
-        {/* halo */}
-        <span className="absolute -inset-2 rounded-[28px] bg-emerald-500/0 group-hover:bg-emerald-500/10 transition-colors duration-300" />
+        {/* halo (behind, no click issues) */}
+        <span className="pointer-events-none absolute -inset-2 -z-10 rounded-[28px] bg-emerald-500/0 group-hover:bg-emerald-500/10 transition-colors duration-300" />
       </div>
     </a>
   );
