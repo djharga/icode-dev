@@ -1,3 +1,8 @@
+/* src/index.css (IMPROVED MOTION + HOVER — Global-grade)
+   الهدف: حركة أهدى/أفخم + easing حديث + hover محترم بدون إحساس “قديم”
+   استبدل الجزء الخاص بالـ transitions/animations/utilities بهذا الملف بالكامل إن أردت.
+*/
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,7 +14,7 @@
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 96px;
-    overflow-x: hidden; /* منع سكرول أفقي عالمي */
+    overflow-x: hidden;
   }
 
   body {
@@ -17,27 +22,36 @@
     font-feature-settings: "kern" 1, "liga" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden; /* منع سكرول أفقي عالمي */
+    overflow-x: hidden;
   }
 
-  /* انتقالات فقط للعناصر التفاعلية */
+  /* ===== Modern motion defaults (أهدى + أفخم) ===== */
+  :root {
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    --dur-fast: 220ms;
+    --dur-mid: 360ms;
+    --dur-slow: 520ms;
+  }
+
+  /* انتقالات — أبطأ + easing حديث */
   a, button, input, textarea, select, summary {
-    transition-property: background-color, border-color, color, opacity, box-shadow, transform;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 180ms;
+    transition-property: background-color, border-color, color, opacity, box-shadow, transform, filter;
+    transition-timing-function: var(--ease-out);
+    transition-duration: var(--dur-mid);
   }
 
-  /* تحسين عالمي: Focus ring نظيف وواضح (Accessiblity) */
+  /* Focus حديث */
   :focus-visible {
-    outline: 2px solid rgba(59, 130, 246, 0.7);
+    outline: 2px solid rgba(59, 130, 246, 0.65);
     outline-offset: 3px;
   }
 
-  /* تحسين عالمي: اختيار النص */
   ::selection {
-    background: rgba(59, 130, 246, 0.25);
+    background: rgba(59, 130, 246, 0.22);
   }
 
+  /* تقليل الحركة لمن يريد */
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     *, *::before, *::after {
@@ -50,22 +64,20 @@
 }
 
 @layer components {
-  /* حاوية موحدة */
   .container-custom {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
-  /* ضبط المسافات: أقل “هواء” — شكل عالمي */
+  /* أقل فراغات (شكل عالمي) */
   .section-padding {
     @apply py-12 md:py-16 lg:py-20;
   }
 
-  /* نسخ لسيكشن هيرو لو عايز أكبر */
   .section-padding-hero {
     @apply pt-20 pb-14 md:pt-24 md:pb-16 lg:pt-28 lg:pb-20;
   }
 
-  /* Glass محسّن عالمياً */
+  /* Glass محسّن */
   .glass {
     @apply bg-white/70 dark:bg-secondary-900/60 backdrop-blur-xl;
     border: 1px solid rgba(148, 163, 184, 0.18);
@@ -78,7 +90,6 @@
     box-shadow: 0 18px 60px rgba(2, 6, 23, 0.18);
   }
 
-  /* Gradients */
   .gradient-primary {
     @apply bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700;
   }
@@ -95,50 +106,68 @@
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-500 to-primary-700;
   }
 
-  /* تأثيرات “عالمية” بدون مبالغة */
+  /* ===== Hover: subtle + premium ===== */
   .hover-lift {
-    @apply transition-transform duration-300 hover:-translate-y-1;
+    transition: transform var(--dur-mid) var(--ease-out);
+    will-change: transform;
+  }
+  .hover-lift:hover {
+    transform: translateY(-4px);
   }
 
   .hover-glow {
-    @apply transition-shadow duration-300 hover:shadow-xl hover:shadow-primary-500/15;
+    transition: box-shadow var(--dur-slow) var(--ease-out), transform var(--dur-mid) var(--ease-out);
+    will-change: box-shadow, transform;
+  }
+  .hover-glow:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 22px 60px rgba(2, 6, 23, 0.14), 0 10px 24px rgba(59, 130, 246, 0.10);
   }
 }
 
 @layer utilities {
   .rtl-flip { transform: scaleX(-1); }
 
-  .animation-delay-200 { animation-delay: 0.2s; }
-  .animation-delay-400 { animation-delay: 0.4s; }
-  .animation-delay-600 { animation-delay: 0.6s; }
-  .animation-delay-800 { animation-delay: 0.8s; }
+  /* ===== Animation delays (أبطأ) ===== */
+  .animation-delay-200 { animation-delay: 0.25s; }
+  .animation-delay-400 { animation-delay: 0.45s; }
+  .animation-delay-600 { animation-delay: 0.65s; }
+  .animation-delay-800 { animation-delay: 0.85s; }
 
-  .animate-fade-in { animation: fadeInScale 0.8s ease-out forwards; }
-  .animate-slide-up { animation: fadeInUp 0.8s ease-out forwards; }
+  /* ===== Premium entrance animations (أهدى) ===== */
+  .animate-fade-in {
+    animation: fadeInScalePremium 900ms var(--ease-out) forwards;
+    will-change: opacity, transform;
+  }
 
-  /* ظل أنعم وأقرب لمنتجات عالمية */
+  .animate-slide-up {
+    animation: fadeInUpPremium 900ms var(--ease-out) forwards;
+    will-change: opacity, transform;
+  }
+
   .shadow-soft { box-shadow: 0 18px 50px rgba(2, 6, 23, 0.14); }
 
   .bg-grid {
-    background-image: radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.22) 1px, transparent 0);
+    background-image: radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.18) 1px, transparent 0);
     background-size: 28px 28px;
   }
 
   .bg-radial-spotlight {
     background:
-      radial-gradient(900px circle at 20% 10%, rgba(14, 165, 233, 0.16), transparent 55%),
-      radial-gradient(800px circle at 80% 20%, rgba(99, 102, 241, 0.12), transparent 55%);
+      radial-gradient(900px circle at 20% 10%, rgba(14, 165, 233, 0.14), transparent 55%),
+      radial-gradient(800px circle at 80% 20%, rgba(99, 102, 241, 0.10), transparent 55%);
   }
 
-  .card-border { border: 1px solid rgba(148, 163, 184, 0.22); }
+  .card-border { border: 1px solid rgba(148, 163, 184, 0.20); }
 }
 
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(24px); }
+/* ===== Premium keyframes (أقل قفز + أقل scale) ===== */
+@keyframes fadeInUpPremium {
+  from { opacity: 0; transform: translateY(18px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes fadeInScale {
-  from { opacity: 0; transform: scale(0.96); }
+@keyframes fadeInScalePremium {
+  from { opacity: 0; transform: scale(0.985); }
   to { opacity: 1; transform: scale(1); }
 }
