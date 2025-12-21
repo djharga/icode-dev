@@ -171,17 +171,21 @@ export function Services() {
                 </Button>
               </Link>
 
-              <a
-                href={WHATSAPP_LINK}
-                target="_blank"
-                rel="noreferrer"
-                onClick={() =>
-                  pushDL('lead_click', { source: 'services_hero', channel: 'whatsapp', target: 'wa' })
-                }
-              >
-                <Button size="lg" variant="outline">
-                  تواصل واتساب
-                </Button>
+             <a
+  href={WHATSAPP_LINK}
+  target="_blank"
+  rel="noreferrer"
+  onClick={() =>
+    pushDL('lead_click', { source: 'services_hero', channel: 'whatsapp', target: 'wa' })
+  }
+>
+  <Button
+    size="lg"
+    variant="outline"
+    className="border-white/35 text-white hover:bg-white/10 hover:border-white/60"
+  >
+    تواصل واتساب
+   </Button>
               </a>
             </div>
           </div>
