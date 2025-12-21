@@ -1,4 +1,4 @@
-// src/pages/Portfolio.tsx (FULL FIXED — WhatsApp unified + stable data + clean memo)
+// src/pages/Portfolio.tsx (FULL FIXED — WhatsApp per-project + no fake metrics + unified GTM + conversion hooks)
 
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -38,87 +38,119 @@ function pushDL(event: string, payload: Record<string, unknown> = {}) {
 
 const CATEGORIES = ['الكل', 'Fintech', 'SaaS', 'E-commerce', 'أمان', 'أنظمة مخصصة', 'موبايل'] as const;
 
+/**
+ * ملاحظة تسويقية:
+ * تم حذف أي أرقام/نسب غير موثقة واستبدالها بقيم محايدة تحفظ الثقة.
+ */
 const PROJECTS: Project[] = [
   {
     title: 'منصة PayFlow',
     category: 'Fintech',
     description: 'منصة مدفوعات ومحافظ رقمية مع طبقة تحقق وهوية (KYC) وضوابط امتثال.',
     techStack: ['React', 'Node.js', 'PostgreSQL', 'Redis', 'AWS'],
-    clientValue: 'تقليل وقت تنفيذ العمليات + لوحات تقارير لحظية.',
-    metric: { label: 'زمن استجابة', value: '< 250ms', icon: 'zap' },
+    clientValue: 'تنفيذ عمليات أسرع + لوحات تقارير لحظية + تجربة واضحة للمستخدم.',
+    metric: { label: 'الأداء', value: 'سريع', icon: 'zap' },
   },
   {
     title: 'نظام ProjectHub',
     category: 'SaaS',
     description: 'إدارة مشاريع وفرق: مهام، صلاحيات، تقارير، وتتبع وقت/تكلفة.',
     techStack: ['Next.js', 'Supabase', 'TypeScript', 'Tailwind CSS'],
-    clientValue: 'وضوح تنفيذ أعلى عبر تقارير أسبوعية ولوحات متابعة.',
-    metric: { label: 'تحسين الإنتاجية', value: '+45%', icon: 'growth' },
+    clientValue: 'وضوح أعلى للتنفيذ عبر تقارير ولوحات متابعة بسيطة قابلة للتوسع.',
+    metric: { label: 'الإنتاجية', value: 'أعلى', icon: 'growth' },
   },
   {
     title: 'متجر LuxeStyle',
     category: 'E-commerce',
     description: 'متجر أزياء مع تجربة بحث/تصفح سريعة، سلة ودفع، وإدارة منتجات.',
     techStack: ['React', 'Express', 'MongoDB', 'Stripe', 'Cloudinary'],
-    clientValue: 'رفع معدل التحويل عبر تحسين مسار الشراء والسرعة.',
-    metric: { label: 'معدل التحويل', value: '+2.1x', icon: 'growth' },
+    clientValue: 'مسار شراء أبسط + تجربة أسرع = احتمالية تحويل أعلى.',
+    metric: { label: 'التحويل', value: 'أعلى', icon: 'growth' },
   },
   {
     title: 'نظام SecureVault',
     category: 'أمان',
     description: 'إدارة أسرار وصلاحيات مع تشفير، سجلات تدقيق، و2FA.',
     techStack: ['Rust', 'PostgreSQL', 'React', 'WebAssembly'],
-    clientValue: 'تقليل المخاطر عبر سياسات وصول واضحة وتسجيل كامل.',
-    metric: { label: 'تقليل المخاطر', value: 'High', icon: 'shield' },
+    clientValue: 'تقليل المخاطر عبر سياسات وصول واضحة + تسجيل تدقيق + حماية أفضل للبيانات.',
+    metric: { label: 'الأمان', value: 'مرتفع', icon: 'shield' },
   },
   {
     title: 'تطبيق HealthTrack',
     category: 'موبايل',
     description: 'تطبيق تتبع صحة/لياقة مع خطط وتذكيرات وتجربة استخدام سلسة.',
-    techStack: ['React Native', 'Firebase', 'TensorFlow', 'Node.js'],
-    clientValue: 'واجهة بسيطة مع أداء ثابت وتجربة يومية سهلة.',
-    metric: { label: 'تقييم المستخدمين', value: '4.8★', icon: 'growth' },
+    techStack: ['React Native', 'Firebase', 'Node.js'],
+    clientValue: 'واجهة بسيطة + أداء ثابت = استخدام يومي أسهل.',
+    metric: { label: 'التجربة', value: 'ممتازة', icon: 'growth' },
   },
   {
     title: 'نظام ERP للمصانع',
     category: 'أنظمة مخصصة',
     description: 'ERP لإدارة الإنتاج والمخزون والمبيعات والموارد البشرية.',
-    techStack: ['Vue.js', 'Django', 'PostgreSQL', 'Docker', 'Kubernetes'],
-    clientValue: 'توحيد العمليات وتقليل الأخطاء والتكرار في البيانات.',
-    metric: { label: 'خفض التكاليف', value: '-35%', icon: 'growth' },
+    techStack: ['Vue.js', 'Django', 'PostgreSQL', 'Docker'],
+    clientValue: 'توحيد العمليات وتقليل الأخطاء والتكرار عبر نظام واحد وصلاحيات واضحة.',
+    metric: { label: 'التكلفة', value: 'أقل', icon: 'growth' },
   },
   {
     title: 'منصة LearnPro',
     category: 'SaaS',
-    description: 'منصة تعليمية: محتوى، متابعة تقدم، فصول افتراضية (اختياري).',
-    techStack: ['React', 'WebRTC', 'Node.js', 'MongoDB', 'AWS'],
-    clientValue: 'تقارير تقدم + إدارة محتوى منظمة للمدرسين.',
-    metric: { label: 'نشاط الطلاب', value: '+60%', icon: 'growth' },
+    description: 'منصة تعليمية: محتوى، متابعة تقدم، وإدارة مقررات.',
+    techStack: ['React', 'Node.js', 'MongoDB', 'AWS'],
+    clientValue: 'إدارة محتوى منظمة + تقارير تقدم تساعد على التحسين المستمر.',
+    metric: { label: 'النشاط', value: 'أعلى', icon: 'growth' },
   },
   {
     title: 'نظام SmartInventory',
     category: 'أنظمة مخصصة',
-    description: 'مخزون ذكي: تنبيهات + توقّع احتياج + صلاحيات فرق.',
-    techStack: ['Angular', 'Python', 'MySQL', 'TensorFlow', 'Docker'],
-    clientValue: 'دقة مخزون أعلى وتقليل فاقد وتوريد أفضل.',
-    metric: { label: 'دقة المخزون', value: '99%', icon: 'zap' },
+    description: 'مخزون ذكي: تنبيهات + صلاحيات فرق + تقارير.',
+    techStack: ['Angular', 'Python', 'MySQL', 'Docker'],
+    clientValue: 'دقة أعلى للمتابعة وتقليل فاقد عبر تنبيهات وعمليات واضحة.',
+    metric: { label: 'المخزون', value: 'أدق', icon: 'zap' },
   },
 ];
 
 export function Portfolio() {
   const WHATSAPP_PHONE = '201507619503';
+
   const WHATSAPP_PREFILL = encodeURIComponent(
     [
-      'عايز استفسر عن مشروع مشابه.',
+      'فضول — عايز مشروع مشابه.',
       '',
-      'نوع المشروع:',
-      'الهدف:',
-      'الميزانية:',
+      'اسم المشروع:',
+      'نوع النشاط:',
+      'الهدف (مبيعات/حجز/نظام):',
       'موعد الإطلاق:',
+      'ميزانية تقريبية:',
       'تفاصيل مختصرة:',
+      '',
+      'مصدر: Portfolio',
     ].join('\n')
   );
+
   const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_PHONE}?text=${WHATSAPP_PREFILL}`;
+
+  const WA_BASE = [
+    'فضول — عايز مشروع مشابه.',
+    '',
+    'اسم المشروع:',
+    'نوع النشاط:',
+    'الهدف (مبيعات/حجز/نظام):',
+    'موعد الإطلاق:',
+    'ميزانية تقريبية:',
+    'تفاصيل مختصرة:',
+  ];
+
+  const waForProject = (projectTitle: string) => {
+    const msg = [
+      ...WA_BASE,
+      '',
+      `المثال الذي أعجبني: ${projectTitle}`,
+      'سؤالي: ينفع نعمل نسخة مشابهة خلال قد إيه وبنطاق إيه؟',
+      '',
+      'مصدر: Portfolio card',
+    ];
+    return `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(msg.join('\n'))}`;
+  };
 
   const [selectedCategory, setSelectedCategory] = useState<(typeof CATEGORIES)[number]>('الكل');
   const [query, setQuery] = useState('');
@@ -172,17 +204,24 @@ export function Portfolio() {
                 href={WHATSAPP_LINK}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() => pushDL('lead_click', { source: 'portfolio_hero_whatsapp' })}
+                onClick={() =>
+                  pushDL('lead_click', { source: 'portfolio_hero', channel: 'whatsapp', target: 'wa' })
+                }
               >
                 <Button
                   size="lg"
                   variant="outline"
                   className="border-white/70 text-white bg-white/10 hover:bg-white/20 hover:text-white hover:border-white/90"
                 >
-                  تواصل سريع
+                  تواصل سريع (فضول)
                 </Button>
               </a>
             </div>
+
+            <p className="mt-6 text-sm text-white/85">
+              اختر مشروعًا أعجبك ثم اضغط <span className="font-bold">“اسأل عن نسخة مشابهة”</span> — هنرد بسؤالين ونحدد
+              لك أسرع مسار.
+            </p>
           </div>
         </div>
       </section>
@@ -346,19 +385,21 @@ export function Portfolio() {
                       </Link>
 
                       <a
-                        href={WHATSAPP_LINK}
+                        href={waForProject(project.title)}
                         target="_blank"
                         rel="noreferrer"
                         onClick={() =>
                           pushDL('lead_click', {
-                            source: 'portfolio_card_whatsapp',
+                            source: 'portfolio_card',
+                            channel: 'whatsapp',
+                            target: 'wa',
                             project: project.title,
                           })
                         }
                         className="flex-1"
                       >
                         <Button className="w-full" variant="outline">
-                          اسأل عن مشروع مشابه
+                          اسأل عن نسخة مشابهة
                         </Button>
                       </a>
                     </div>
@@ -419,10 +460,12 @@ export function Portfolio() {
                 href={WHATSAPP_LINK}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() => pushDL('lead_click', { source: 'portfolio_footer_whatsapp' })}
+                onClick={() =>
+                  pushDL('lead_click', { source: 'portfolio_footer', channel: 'whatsapp', target: 'wa' })
+                }
               >
                 <Button size="lg" variant="outline">
-                  تواصل الآن
+                  تواصل الآن (فضول)
                 </Button>
               </a>
             </div>
