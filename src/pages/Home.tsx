@@ -1,3 +1,7 @@
+// src/pages/Home.tsx  (FULL UPDATED — PHASE 3)
+// الهدف: Funnel واضح: Home -> /offer أو WhatsApp
+// + Events للـ GTM (dataLayer) بدون أي تفرعات
+
 import { Link } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -14,12 +18,23 @@ import {
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 
+declare global {
+  interface Window {
+    dataLayer?: unknown[];
+  }
+}
+
+function pushDL(event: string, payload: Record<string, unknown> = {}) {
+  if (!window.dataLayer) window.dataLayer = [];
+  window.dataLayer.push({ event, ...payload });
+}
+
 export function Home() {
-  // ====== PHASE 1 CONFIG (EDIT THESE ONLY) ======
-  const WHATSAPP_PHONE = '201234567890'; // TODO: put your real number (Egypt example)
+  // ====== CONFIG ======
+  const WHATSAPP_PHONE = '201234567890'; // TODO: put your real number
   const WHATSAPP_PREFILL = encodeURIComponent(
     [
-      'عايز عرض (موقع شغال خلال 7 أيام).',
+      'عايز أبدأ عرض (موقع شغال خلال 7 أيام).',
       '',
       'اسم المشروع:',
       'نوع المشروع (شركة/متجر/عيادة/شخصي):',
@@ -41,8 +56,6 @@ export function Home() {
     { icon: Users, title: 'استشارات تقنية', description: 'توجيه تقني واستشارات متخصصة' },
   ];
 
-  // NOTE: ديموهات = خطر على الثقة لو اتكشف أنها وهمية.
-  // خليها "نماذج" فقط أو اربطها بلينكات حقيقية لما تتوفر.
   const projects = [
     {
       title: 'منصة Fintech',
@@ -88,7 +101,6 @@ export function Home() {
     },
   ];
 
-  // خلي الأرقام واقعية. لو مش متأكد، استبدلها بـ "قيمة" بدل رقم.
   const stats = [
     { value: '150+', label: 'مشروع منجز' },
     { value: '100+', label: 'عميل راضٍ' },
@@ -105,7 +117,7 @@ export function Home() {
 
   return (
     <div className="min-h-screen">
-      {/* ========== HERO (PHASE 1: Conversion-first) ========== */}
+      {/* HERO */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
         <div className="absolute inset-0 gradient-primary opacity-10 bg-noise" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/50 to-white dark:via-secondary-900/50 dark:to-secondary-900" />
@@ -120,7 +132,6 @@ export function Home() {
                   التي تصنع الفارق
                 </h1>
 
-                {/* Offer + Audience */}
                 <p className="text-lg md:text-xl text-secondary-600 dark:text-secondary-300 mb-3 leading-relaxed animate-slide-up">
                   نحوّل فكرتك لموقع شغال خلال 7 أيام — أو لا تدفع شيئًا.
                 </p>
@@ -128,7 +139,6 @@ export function Home() {
                   مناسب للشركات الناشئة، المتاجر، العيادات، والمشاريع اللي محتاجة نتائج سريعة.
                 </p>
 
-                {/* Trust bullets (fast proof) */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8 animate-slide-up animation-delay-150">
                   {[
                     { icon: CheckCircle, text: 'تسليم بموعد واضح + خطة عمل' },
@@ -146,22 +156,29 @@ export function Home() {
                   ))}
                 </div>
 
-                {/* CTAs: WhatsApp first, then consultation */}
+                {/* PHASE 3 CTA: WhatsApp + /offer only */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-slide-up animation-delay-200">
-                  <a href={WHATSAPP_LINK} target="_blank" rel="noreferrer">
+                  <a
+                    href={WHATSAPP_LINK}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => pushDL('lead_click', { source: 'home_hero_whatsapp' })}
+                  >
                     <Button size="lg" icon={ArrowLeft}>
                       ابدأ على واتساب الآن
                     </Button>
                   </a>
 
-                  <Link to="/consultation">
+                  <Link
+                    to="/offer"
+                    onClick={() => pushDL('nav_click', { target: '/offer', source: 'home_hero' })}
+                  >
                     <Button size="lg" variant="outline">
-                      احجز استشارة مجانية
+                      شوف عرض 7 أيام
                     </Button>
                   </Link>
                 </div>
 
-                {/* Micro-constraint to filter junk leads */}
                 <p className="mt-5 text-sm text-secondary-500 dark:text-secondary-400">
                   ملاحظة: قبل البدء بنحدد النطاق والميزانية بوضوح لتجنب إهدار الوقت.
                 </p>
@@ -183,7 +200,7 @@ export function Home() {
         </div>
       </section>
 
-      {/* ========== WHY US ========== */}
+      {/* WHY US */}
       <section className="section-padding bg-secondary-50 dark:bg-secondary-900">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center mb-16">
@@ -215,10 +232,22 @@ export function Home() {
               </Card>
             ))}
           </div>
+
+          {/* MID CTA (route to offer) */}
+          <div className="text-center mt-12">
+            <Link
+              to="/offer"
+              onClick={() => pushDL('nav_click', { target: '/offer', source: 'home_whyus' })}
+            >
+              <Button size="lg" variant="outline" icon={ArrowLeft}>
+                افتح عرض 7 أيام
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* ========== SERVICES ========== */}
+      {/* SERVICES */}
       <section className="section-padding">
         <div className="container-custom">
           <div className="text-center mb-16">
@@ -245,7 +274,7 @@ export function Home() {
           </div>
 
           <div className="text-center mt-12">
-            <Link to="/services">
+            <Link to="/services" onClick={() => pushDL('nav_click', { target: '/services', source: 'home_services' })}>
               <Button size="lg" variant="outline" icon={ArrowLeft}>
                 عرض جميع الخدمات
               </Button>
@@ -254,7 +283,7 @@ export function Home() {
         </div>
       </section>
 
-      {/* ========== PROCESS ========== */}
+      {/* PROCESS */}
       <section className="section-padding bg-secondary-900 text-white">
         <div className="container-custom">
           <div className="text-center mb-16">
@@ -273,10 +302,22 @@ export function Home() {
               </div>
             ))}
           </div>
+
+          {/* PROCESS CTA */}
+          <div className="text-center mt-12">
+            <Link
+              to="/offer"
+              onClick={() => pushDL('nav_click', { target: '/offer', source: 'home_process' })}
+            >
+              <Button size="lg" variant="secondary" icon={ArrowLeft}>
+                ابدأ بعرض 7 أيام
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* ========== PROJECTS ========== */}
+      {/* PROJECTS */}
       <section className="section-padding">
         <div className="container-custom">
           <div className="text-center mb-16">
@@ -318,7 +359,7 @@ export function Home() {
           </div>
 
           <div className="text-center mt-12">
-            <Link to="/portfolio">
+            <Link to="/portfolio" onClick={() => pushDL('nav_click', { target: '/portfolio', source: 'home_projects' })}>
               <Button size="lg" variant="outline" icon={ArrowLeft}>
                 عرض جميع الأعمال
               </Button>
@@ -327,7 +368,7 @@ export function Home() {
         </div>
       </section>
 
-      {/* ========== TESTIMONIALS ========== */}
+      {/* TESTIMONIALS */}
       <section className="section-padding bg-secondary-50 dark:bg-secondary-900">
         <div className="container-custom">
           <div className="text-center mb-16">
@@ -361,10 +402,22 @@ export function Home() {
               </Card>
             ))}
           </div>
+
+          {/* TESTIMONIAL CTA */}
+          <div className="text-center mt-12">
+            <Link
+              to="/offer"
+              onClick={() => pushDL('nav_click', { target: '/offer', source: 'home_testimonials' })}
+            >
+              <Button size="lg" variant="outline" icon={ArrowLeft}>
+                خُد العرض الآن
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* ========== STATS ========== */}
+      {/* STATS */}
       <section className="section-padding gradient-primary text-white">
         <div className="container-custom">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
@@ -378,7 +431,7 @@ export function Home() {
         </div>
       </section>
 
-      {/* ========== FINAL CTA (WhatsApp-first) ========== */}
+      {/* FINAL CTA (PHASE 3) */}
       <section className="section-padding">
         <div className="container-custom">
           <Card className="p-12 md:p-16 text-center" glass>
@@ -386,17 +439,25 @@ export function Home() {
               جاهز لبدء مشروعك؟
             </h2>
             <p className="text-xl text-secondary-600 dark:text-secondary-300 mb-8 max-w-2xl mx-auto">
-              تواصل معنا الآن واحصل على استشارة مجانية وخطة تنفيذ واضحة قبل ما تدفع جنيه.
+              ابدأ فورًا بعرض 7 أيام أو افتح واتساب وحدد النطاق.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href={WHATSAPP_LINK} target="_blank" rel="noreferrer">
+              <a
+                href={WHATSAPP_LINK}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => pushDL('lead_click', { source: 'home_footer_whatsapp' })}
+              >
                 <Button size="lg" icon={ArrowLeft}>
                   ابدأ على واتساب الآن
                 </Button>
               </a>
-              <Link to="/pricing">
+              <Link
+                to="/offer"
+                onClick={() => pushDL('nav_click', { target: '/offer', source: 'home_footer' })}
+              >
                 <Button size="lg" variant="outline">
-                  اطلع على الأسعار
+                  شوف عرض 7 أيام
                 </Button>
               </Link>
             </div>
