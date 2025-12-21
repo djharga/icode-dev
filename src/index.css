@@ -1,7 +1,4 @@
-/* src/index.css (IMPROVED MOTION + HOVER — Global-grade)
-   الهدف: حركة أهدى/أفخم + easing حديث + hover محترم بدون إحساس “قديم”
-   استبدل الجزء الخاص بالـ transitions/animations/utilities بهذا الملف بالكامل إن أردت.
-*/
+/* src/index.css (FULL UPDATED — keep as-is, only minor safety additions) */
 
 @tailwind base;
 @tailwind components;
@@ -15,6 +12,7 @@
     scroll-behavior: smooth;
     scroll-padding-top: 96px;
     overflow-x: hidden;
+    text-rendering: optimizeLegibility;
   }
 
   body {
