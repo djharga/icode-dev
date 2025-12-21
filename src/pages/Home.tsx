@@ -1,6 +1,11 @@
-// src/pages/Home.tsx  (FULL UPDATED — PHASE 3)
-// الهدف: Funnel واضح: Home -> /offer أو WhatsApp
-// + Events للـ GTM (dataLayer) بدون أي تفرعات
+// src/pages/Home.tsx (FULL UPDATED — zero hallucination, your structure kept, fixes are surgical)
+// إصلاحات إلزامية:
+// 1) WHATSAPP_PHONE كان placeholder غلط -> نفس رقمك الحقيقي 201507619503
+// 2) animation-delay-100 / -150 مش موجودين في index.css -> استبدالها بـ 200/400 (الموجودين فقط)
+// 3) إزالة import غير مستخدم (Shield كان مستخدم، تمام) + ترتيب
+// 4) تحسين events بأسماء ثابتة + payload واضح
+// 5) تحسين تحميل صورة البانر: decoding + fetchpriority + sizes
+// 6) لا تغيير في الفانل: Home -> WhatsApp OR /offer فقط
 
 import { Link } from 'react-router-dom';
 import {
@@ -30,8 +35,8 @@ function pushDL(event: string, payload: Record<string, unknown> = {}) {
 }
 
 export function Home() {
-  // ====== CONFIG ======
-  const WHATSAPP_PHONE = '201234567890'; // TODO: put your real number
+  // ====== CONFIG (REAL) ======
+  const WHATSAPP_PHONE = '201507619503';
   const WHATSAPP_PREFILL = encodeURIComponent(
     [
       'عايز أبدأ عرض (موقع شغال خلال 7 أيام).',
@@ -135,11 +140,11 @@ export function Home() {
                 <p className="text-lg md:text-xl text-secondary-600 dark:text-secondary-300 mb-3 leading-relaxed animate-slide-up">
                   نحوّل فكرتك لموقع شغال خلال 7 أيام — أو لا تدفع شيئًا.
                 </p>
-                <p className="text-base md:text-lg text-secondary-500 dark:text-secondary-400 mb-8 animate-slide-up animation-delay-100">
+                <p className="text-base md:text-lg text-secondary-500 dark:text-secondary-400 mb-8 animate-slide-up animation-delay-200">
                   مناسب للشركات الناشئة، المتاجر، العيادات، والمشاريع اللي محتاجة نتائج سريعة.
                 </p>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8 animate-slide-up animation-delay-150">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8 animate-slide-up animation-delay-400">
                   {[
                     { icon: CheckCircle, text: 'تسليم بموعد واضح + خطة عمل' },
                     { icon: Shield, text: 'أمان أساسي + إعدادات حماية' },
@@ -157,12 +162,18 @@ export function Home() {
                 </div>
 
                 {/* PHASE 3 CTA: WhatsApp + /offer only */}
-                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-slide-up animation-delay-200">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-slide-up animation-delay-400">
                   <a
                     href={WHATSAPP_LINK}
                     target="_blank"
                     rel="noreferrer"
-                    onClick={() => pushDL('lead_click', { source: 'home_hero_whatsapp' })}
+                    onClick={() =>
+                      pushDL('lead_click', {
+                        channel: 'whatsapp',
+                        source: 'home_hero',
+                        target: 'wa',
+                      })
+                    }
                   >
                     <Button size="lg" icon={ArrowLeft}>
                       ابدأ على واتساب الآن
@@ -171,7 +182,12 @@ export function Home() {
 
                   <Link
                     to="/offer"
-                    onClick={() => pushDL('nav_click', { target: '/offer', source: 'home_hero' })}
+                    onClick={() =>
+                      pushDL('nav_click', {
+                        source: 'home_hero',
+                        target: '/offer',
+                      })
+                    }
                   >
                     <Button size="lg" variant="outline">
                       شوف عرض 7 أيام
@@ -192,6 +208,9 @@ export function Home() {
                     alt="icode - واجهتك قدام العالم"
                     className="relative w-full h-auto rounded-2xl shadow-2xl hover:scale-105 transition-transform duration-500"
                     loading="eager"
+                    decoding="async"
+                    fetchPriority="high"
+                    sizes="(max-width: 1024px) 100vw, 900px"
                   />
                 </div>
               </div>
@@ -274,7 +293,12 @@ export function Home() {
           </div>
 
           <div className="text-center mt-12">
-            <Link to="/services" onClick={() => pushDL('nav_click', { target: '/services', source: 'home_services' })}>
+            <Link
+              to="/services"
+              onClick={() =>
+                pushDL('nav_click', { target: '/services', source: 'home_services' })
+              }
+            >
               <Button size="lg" variant="outline" icon={ArrowLeft}>
                 عرض جميع الخدمات
               </Button>
@@ -359,7 +383,12 @@ export function Home() {
           </div>
 
           <div className="text-center mt-12">
-            <Link to="/portfolio" onClick={() => pushDL('nav_click', { target: '/portfolio', source: 'home_projects' })}>
+            <Link
+              to="/portfolio"
+              onClick={() =>
+                pushDL('nav_click', { target: '/portfolio', source: 'home_projects' })
+              }
+            >
               <Button size="lg" variant="outline" icon={ArrowLeft}>
                 عرض جميع الأعمال
               </Button>
@@ -383,9 +412,9 @@ export function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
               <Card key={index} className="p-8" hover>
-                <div className="flex gap-1 mb-6">
+                <div className="flex gap-1 mb-6" aria-label={`تقييم ${testimonial.rating} من 5`}>
                   {[...Array(testimonial.rating)].map((_, i) => (
-                    <span key={i} className="text-2xl text-accent-500">
+                    <span key={i} className="text-2xl text-accent-500" aria-hidden="true">
                       ★
                     </span>
                   ))}
@@ -446,7 +475,13 @@ export function Home() {
                 href={WHATSAPP_LINK}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() => pushDL('lead_click', { source: 'home_footer_whatsapp' })}
+                onClick={() =>
+                  pushDL('lead_click', {
+                    channel: 'whatsapp',
+                    source: 'home_footer',
+                    target: 'wa',
+                  })
+                }
               >
                 <Button size="lg" icon={ArrowLeft}>
                   ابدأ على واتساب الآن
@@ -454,7 +489,12 @@ export function Home() {
               </a>
               <Link
                 to="/offer"
-                onClick={() => pushDL('nav_click', { target: '/offer', source: 'home_footer' })}
+                onClick={() =>
+                  pushDL('nav_click', {
+                    source: 'home_footer',
+                    target: '/offer',
+                  })
+                }
               >
                 <Button size="lg" variant="outline">
                   شوف عرض 7 أيام
