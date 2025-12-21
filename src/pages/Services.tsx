@@ -1,9 +1,51 @@
-ركز import { Link } from 'react-router-dom';
-import { Code2, Smartphone, Server, Shield, Zap, Users, CheckCircle, ArrowLeft } from 'lucide-react';
+// src/pages/Services.tsx (FULL UPDATED — focus fixes + funnel + GTM events + stable anchors)
+// طلبك: "ركز" -> تم تعديل الملف بدون تغيير تصميمك جذريًا، لكن:
+// - إضافة GTM events (dataLayer) بنفس أسلوب Home
+// - روابط CTA تم توجيهها للأفضل (Offer/WhatsApp/Consultation) مع إبقاء Contact
+// - تثبيت الـ anchors بإضافة scroll-margin-top لمنع تغطية الهيدر عند #hash
+// - تحسين a11y بسيط + IDs ثابتة
+// - لا هلوسة: كل شيء داخل الملف فقط
+
+import { Link } from 'react-router-dom';
+import {
+  Code2,
+  Smartphone,
+  Server,
+  Shield,
+  Zap,
+  Users,
+  CheckCircle,
+  ArrowLeft,
+} from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 
+declare global {
+  interface Window {
+    dataLayer?: unknown[];
+  }
+}
+
+function pushDL(event: string, payload: Record<string, unknown> = {}) {
+  if (!window.dataLayer) window.dataLayer = [];
+  window.dataLayer.push({ event, ...payload });
+}
+
 export function Services() {
+  const WHATSAPP_PHONE = '201507619503';
+  const WHATSAPP_PREFILL = encodeURIComponent(
+    [
+      'عايز استفسار عن خدمة من خدمات icode.',
+      '',
+      'الخدمة المطلوبة:',
+      'نوع المشروع:',
+      'الميزانية:',
+      'موعد الإطلاق:',
+      'تفاصيل مختصرة:',
+    ].join('\n')
+  );
+  const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_PHONE}?text=${WHATSAPP_PREFILL}`;
+
   const services = [
     {
       id: 'websites',
@@ -105,6 +147,7 @@ export function Services() {
 
   return (
     <div className="min-h-screen pt-20">
+      {/* HERO */}
       <section className="section-padding gradient-primary text-white">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center">
@@ -112,26 +155,62 @@ export function Services() {
               خدماتنا الاحترافية
             </h1>
             <p className="text-xl md:text-2xl leading-relaxed text-white/90">
-              نقدم مجموعة شاملة من الحلول التقنية المتقدمة التي تلبي جميع احتياجاتك البرمجية بأعلى معايير الجودة
+              نقدم حلولاً تقنية متقدمة تلبي احتياجاتك البرمجية بمعايير تنفيذ عالية وتركيز على النتائج.
             </p>
+
+            {/* HERO CTA: Offer + WhatsApp */}
+            <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                to="/offer"
+                onClick={() =>
+                  pushDL('nav_click', { source: 'services_hero', target: '/offer' })
+                }
+              >
+                <Button size="lg" variant="secondary" icon={ArrowLeft}>
+                  شوف عرض 7 أيام
+                </Button>
+              </Link>
+
+              <a
+                href={WHATSAPP_LINK}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() =>
+                  pushDL('lead_click', { source: 'services_hero', channel: 'whatsapp', target: 'wa' })
+                }
+              >
+                <Button size="lg" variant="outline">
+                  تواصل واتساب
+                </Button>
+              </a>
+            </div>
           </div>
         </div>
       </section>
 
+      {/* SERVICES LIST */}
       <section className="section-padding">
         <div className="container-custom">
           <div className="space-y-16">
             {services.map((service, index) => (
-              <div key={service.id} id={service.id}>
+              <div
+                key={service.id}
+                id={service.id}
+                className="scroll-mt-28"
+                aria-label={service.title}
+              >
                 <Card className="overflow-hidden" hover={false}>
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Left / Main */}
                     <div className={`p-8 md:p-12 ${index % 2 === 0 ? 'order-1' : 'order-2'}`}>
                       <div className="w-16 h-16 gradient-primary rounded-2xl flex items-center justify-center mb-6">
                         <service.icon className="w-8 h-8 text-white" />
                       </div>
+
                       <h2 className="text-3xl md:text-4xl font-bold text-secondary-900 dark:text-white mb-4">
                         {service.title}
                       </h2>
+
                       <p className="text-lg text-secondary-600 dark:text-secondary-300 leading-relaxed mb-6">
                         {service.description}
                       </p>
@@ -152,14 +231,58 @@ export function Services() {
                         </ul>
                       </div>
 
-                      <Link to="/contact">
-                        <Button icon={ArrowLeft}>
-                          اطلب عرض سعر
-                        </Button>
-                      </Link>
+                      {/* Primary CTA per service */}
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <Link
+                          to="/offer"
+                          onClick={() =>
+                            pushDL('nav_click', {
+                              source: `services_${service.id}`,
+                              target: '/offer',
+                            })
+                          }
+                        >
+                          <Button icon={ArrowLeft}>شوف عرض 7 أيام</Button>
+                        </Link>
+
+                        <a
+                          href={`${WHATSAPP_LINK}${encodeURIComponent(
+                            `\n\nالخدمة المطلوبة: ${service.title}`
+                          )}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          onClick={() =>
+                            pushDL('lead_click', {
+                              source: `services_${service.id}`,
+                              channel: 'whatsapp',
+                              target: 'wa',
+                              service: service.id,
+                            })
+                          }
+                        >
+                          <Button variant="outline">اطلب عبر واتساب</Button>
+                        </a>
+
+                        <Link
+                          to="/contact"
+                          onClick={() =>
+                            pushDL('nav_click', {
+                              source: `services_${service.id}`,
+                              target: '/contact',
+                            })
+                          }
+                        >
+                          <Button variant="outline">اطلب عرض سعر</Button>
+                        </Link>
+                      </div>
                     </div>
 
-                    <div className={`p-8 md:p-12 bg-secondary-50 dark:bg-secondary-800 flex flex-col justify-center ${index % 2 === 0 ? 'order-2' : 'order-1'}`}>
+                    {/* Right / Value */}
+                    <div
+                      className={`p-8 md:p-12 bg-secondary-50 dark:bg-secondary-800 flex flex-col justify-center ${
+                        index % 2 === 0 ? 'order-2' : 'order-1'
+                      }`}
+                    >
                       <div className="mb-8">
                         <h3 className="text-lg font-bold text-secondary-900 dark:text-white mb-3">
                           لمن هذه الخدمة؟
@@ -170,12 +293,8 @@ export function Services() {
                       </div>
 
                       <div className="p-6 gradient-primary rounded-2xl text-white">
-                        <h3 className="text-lg font-bold mb-3">
-                          القيمة المضافة
-                        </h3>
-                        <p className="text-white/90 leading-relaxed">
-                          {service.value}
-                        </p>
+                        <h3 className="text-lg font-bold mb-3">القيمة المضافة</h3>
+                        <p className="text-white/90 leading-relaxed">{service.value}</p>
                       </div>
                     </div>
                   </div>
@@ -186,6 +305,7 @@ export function Services() {
         </div>
       </section>
 
+      {/* FINAL CTA */}
       <section className="section-padding bg-secondary-50 dark:bg-secondary-900">
         <div className="container-custom">
           <div className="max-w-4xl mx-auto">
@@ -194,15 +314,39 @@ export function Services() {
                 لا تجد ما تبحث عنه؟
               </h2>
               <p className="text-xl text-secondary-600 dark:text-secondary-300 mb-8">
-                نحن متخصصون في بناء حلول مخصصة. تواصل معنا وأخبرنا بما تحتاجه بالضبط
+                نحن متخصصون في بناء حلول مخصصة. تواصل معنا وأخبرنا بما تحتاجه بالضبط.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/consultation">
+                <Link
+                  to="/consultation"
+                  onClick={() =>
+                    pushDL('nav_click', { source: 'services_final', target: '/consultation' })
+                  }
+                >
                   <Button size="lg" icon={ArrowLeft}>
-                    احجز استشارة مجانية
+                    احجز استشارة
                   </Button>
                 </Link>
-                <Link to="/contact">
+
+                <a
+                  href={WHATSAPP_LINK}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() =>
+                    pushDL('lead_click', { source: 'services_final', channel: 'whatsapp', target: 'wa' })
+                  }
+                >
+                  <Button size="lg" variant="outline">
+                    واتساب
+                  </Button>
+                </a>
+
+                <Link
+                  to="/contact"
+                  onClick={() =>
+                    pushDL('nav_click', { source: 'services_final', target: '/contact' })
+                  }
+                >
                   <Button size="lg" variant="outline">
                     تواصل معنا
                   </Button>
@@ -214,4 +358,4 @@ export function Services() {
       </section>
     </div>
   );
-} 
+}
