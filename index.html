@@ -1,3 +1,4 @@
+<!-- index.html (FULL UPDATED) -->
 <!doctype html>
 <html lang="ar" dir="rtl">
   <head>
@@ -19,7 +20,31 @@
     <link rel="canonical" href="https://ico.bolt.host/" />
     <meta name="robots" content="index,follow" />
 
-    <!-- Fonts -->
+    <!-- Social / Open Graph -->
+    <meta property="og:locale" content="ar_AR" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="icode | استوديو برمجة وتطوير مواقع وتطبيقات احترافية" />
+    <meta
+      property="og:description"
+      content="نحوّل فكرتك لموقع شغال خلال 7 أيام — أو لا تدفع شيئًا."
+    />
+    <meta property="og:url" content="https://ico.bolt.host/" />
+    <meta property="og:site_name" content="icode" />
+    <!-- ضع صورة فعلية -->
+    <meta property="og:image" content="https://ico.bolt.host/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="icode | استوديو برمجة احترافي" />
+    <meta
+      name="twitter:description"
+      content="نحوّل فكرتك لموقع شغال خلال 7 أيام — أو لا تدفع شيئًا."
+    />
+    <meta name="twitter:image" content="https://ico.bolt.host/og.jpg" />
+
+    <!-- Fonts (performance) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -27,18 +52,78 @@
       rel="stylesheet"
     />
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+
     <!-- ================= Google Tag Manager ================= -->
     <script>
-      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-      })(window,document,'script','dataLayer','GTM-56J9S7S4');
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != 'dataLayer' ? '&l=' + l : '';
+        j.async = true;
+        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, 'script', 'dataLayer', 'GTM-56J9S7S4');
     </script>
     <!-- ====================================================== -->
 
+    <!-- OPTIONAL: Meta Pixel (Only if you will run Meta ads) -->
+    <!--
+    <script>
+      !(function (f, b, e, v, n, t, s) {
+        if (f.fbq) return;
+        n = f.fbq = function () {
+          n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+        };
+        if (!f._fbq) f._fbq = n;
+        n.push = n;
+        n.loaded = !0;
+        n.version = '2.0';
+        n.queue = [];
+        t = b.createElement(e);
+        t.async = !0;
+        t.src = v;
+        s = b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t, s);
+      })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', 'XXXXXXXXXXXXXXX');
+      fbq('track', 'PageView');
+    </script>
+    <noscript>
+      <img
+        height="1"
+        width="1"
+        style="display: none"
+        src="https://www.facebook.com/tr?id=XXXXXXXXXXXXXXX&ev=PageView&noscript=1"
+      />
+    </noscript>
+    -->
+    <!-- End Meta Pixel -->
+
     <!-- Vite + React -->
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- JSON-LD (Organization) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "icode",
+        "url": "https://ico.bolt.host/",
+        "logo": "https://ico.bolt.host/favicon.png",
+        "sameAs": [],
+        "contactPoint": [
+          {
+            "@type": "ContactPoint",
+            "contactType": "sales",
+            "availableLanguage": ["ar"]
+          }
+        ]
+      }
+    </script>
   </head>
 
   <body>
@@ -48,15 +133,15 @@
         src="https://www.googletagmanager.com/ns.html?id=GTM-56J9S7S4"
         height="0"
         width="0"
-        style="display:none;visibility:hidden">
-      </iframe>
+        style="display: none; visibility: hidden"
+      ></iframe>
     </noscript>
     <!-- End Google Tag Manager (noscript) -->
 
-    <!-- SEO Fallback -->
-    <main style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">
-      <h1>استوديو برمجة احترافي لتطوير المواقع والتطبيقات</h1>
-      <p>icode شركة متخصصة في الحلول الرقمية.</p>
+    <!-- SEO Fallback (minimal, avoid duplicate content) -->
+    <main style="position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden">
+      <h1>icode — استوديو برمجة احترافي</h1>
+      <p>تطوير مواقع وتطبيقات وأنظمة مخصصة.</p>
     </main>
 
     <div id="root"></div>
