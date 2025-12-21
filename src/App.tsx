@@ -8,6 +8,7 @@ import { ScrollToTop } from './components/layout/ScrollToTop';
 import { ProgressBar } from './components/layout/ProgressBar';
 import { PageTransition } from './components/layout/PageTransition';
 import { BackToTop } from './components/layout/BackToTop';
+import { FloatingWhatsApp } from './components/layout/FloatingWhatsApp';
 
 import { Home } from './pages/Home';
 import { Services } from './pages/Services';
