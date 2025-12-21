@@ -1,7 +1,7 @@
 import { MessageCircle } from 'lucide-react';
 
 type Props = {
-  phone: string; // مثال: 201234567890
+  phone: string; // مثال: 201507619503
   prefill?: string;
   position?: 'left' | 'right';
 };
