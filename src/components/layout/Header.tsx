@@ -1,6 +1,8 @@
+// Header.tsx (UPDATED) — إضافة "لوحة العميل" للهيدر (Desktop + Mobile)
+
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Moon, Sun, Code2, PhoneCall, ArrowLeft } from 'lucide-react';
+import { Menu, X, Moon, Sun, Code2, PhoneCall, ArrowLeft, Lock } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { Button } from '../ui/Button';
 
@@ -75,6 +77,7 @@ export function Header() {
       { name: 'الرئيسية', href: '/' },
       { name: 'عرض 7 أيام', href: '/offer' },
       { name: 'الخدمات', href: '/services' },
+      { name: 'لوحة العميل', href: '/portal', icon: Lock },
       { name: 'تواصل', href: '/contact' },
     ],
     []
@@ -88,8 +91,9 @@ export function Header() {
       className={[
         'fixed top-0 right-0 left-0 z-50',
         'transition-all duration-300',
-        scrolled ? 'bg-white/80 dark:bg-secondary-900/80 backdrop-blur border-b border-black/5 dark:border-white/10 shadow'
-                 : 'bg-white/60 dark:bg-secondary-900/60 backdrop-blur border-b border-black/5 dark:border-white/10',
+        scrolled
+          ? 'bg-white/80 dark:bg-secondary-900/80 backdrop-blur border-b border-black/5 dark:border-white/10 shadow'
+          : 'bg-white/60 dark:bg-secondary-900/60 backdrop-blur border-b border-black/5 dark:border-white/10',
       ].join(' ')}
     >
       <nav className="container-custom" aria-label="التنقل الرئيسي">
@@ -101,9 +105,11 @@ export function Header() {
             <span className="text-2xl font-bold text-gradient">icode</span>
           </Link>
 
+          {/* Desktop nav */}
           <div className="hidden lg:flex items-center gap-8">
             {navigation.map((item) => {
               const active = isActive(item.href);
+              const Icon = (item as any).icon as any;
               return (
                 <Link
                   key={item.name}
@@ -111,18 +117,20 @@ export function Header() {
                   aria-current={active ? 'page' : undefined}
                   onClick={() => pushDL('nav_click', { source: 'header_desktop', target: item.href })}
                   className={[
-                    'text-base font-semibold transition-colors',
+                    'text-base font-semibold transition-colors inline-flex items-center gap-2',
                     active
                       ? 'text-primary-600 dark:text-primary-400'
                       : 'text-secondary-700 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400',
                   ].join(' ')}
                 >
-                  {item.name}
+                  {Icon ? <Icon className="w-4 h-4" /> : null}
+                  <span>{item.name}</span>
                 </Link>
               );
             })}
           </div>
 
+          {/* Desktop actions */}
           <div className="hidden lg:flex items-center gap-3">
             <button
               onClick={toggleTheme}
@@ -152,6 +160,7 @@ export function Header() {
             </a>
           </div>
 
+          {/* Mobile toggle */}
           <button
             onClick={() => setMobileMenuOpen((v) => !v)}
             className="lg:hidden p-2 rounded-lg text-secondary-700 dark:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors"
@@ -165,6 +174,7 @@ export function Header() {
         </div>
       </nav>
 
+      {/* Mobile menu */}
       {mobileMenuOpen && (
         <>
           <div
@@ -183,6 +193,7 @@ export function Header() {
               <div className="flex flex-col gap-4">
                 {navigation.map((item) => {
                   const active = isActive(item.href);
+                  const Icon = (item as any).icon as any;
                   return (
                     <Link
                       key={item.name}
@@ -193,13 +204,14 @@ export function Header() {
                       }}
                       aria-current={active ? 'page' : undefined}
                       className={[
-                        'text-lg font-semibold py-2 rounded-lg px-2 transition-colors',
+                        'text-lg font-semibold py-2 rounded-lg px-2 transition-colors flex items-center gap-2',
                         active
                           ? 'text-primary-600 dark:text-primary-400 bg-primary-50/60 dark:bg-secondary-800/60'
                           : 'text-secondary-700 dark:text-secondary-300 hover:bg-secondary-50 dark:hover:bg-secondary-800/60',
                       ].join(' ')}
                     >
-                      {item.name}
+                      {Icon ? <Icon className="w-5 h-5" /> : null}
+                      <span>{item.name}</span>
                     </Link>
                   );
                 })}
