@@ -1,17 +1,11 @@
-<!-- index.html (FULL UPDATED — safe SEO + better perf, no cloaking) -->
 <!doctype html>
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Google Site Verification -->
-    <meta
-      name="google-site-verification"
-      content="Ed3HarTJF8fz06SlMgoIEQ7r8arJviyzYEEpL1AD6TU"
-    />
+    <meta name="google-site-verification" content="Ed3HarTJF8fz06SlMgoIEQ7r8arJviyzYEEpL1AD6TU" />
 
-    <!-- SEO -->
     <title>icode | استوديو برمجة وتطوير مواقع وتطبيقات احترافية</title>
     <meta
       name="description"
@@ -20,40 +14,31 @@
     <link rel="canonical" href="https://ico.bolt.host/" />
     <meta name="robots" content="index,follow" />
 
-    <!-- UX / PWA basics (optional but safe) -->
     <meta name="theme-color" content="#0b1220" />
+
+    <!-- PWA (احذف manifest لو مش مستخدمه) -->
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-    <!-- Social / Open Graph -->
+    <!-- Open Graph -->
     <meta property="og:locale" content="ar_AR" />
     <meta property="og:type" content="website" />
-    <meta
-      property="og:title"
-      content="icode | استوديو برمجة وتطوير مواقع وتطبيقات احترافية"
-    />
-    <meta
-      property="og:description"
-      content="نحوّل فكرتك لموقع شغال خلال 7 أيام — أو لا تدفع شيئًا."
-    />
+    <meta property="og:title" content="icode | استوديو برمجة وتطوير مواقع وتطبيقات احترافية" />
+    <meta property="og:description" content="نحوّل فكرتك لموقع شغال خلال 7 أيام — أو لا تدفع شيئًا." />
     <meta property="og:url" content="https://ico.bolt.host/" />
     <meta property="og:site_name" content="icode" />
     <meta property="og:image" content="https://ico.bolt.host/og.jpg" />
-    <meta property="og:image:secure_url" content="https://ico.bolt.host/og.jpg" />
-    <meta property="og:image:alt" content="icode — استوديو برمجة احترافي" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="icode — استوديو برمجة احترافي" />
 
-    <!-- Twitter Card -->
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="icode | استوديو برمجة احترافي" />
-    <meta
-      name="twitter:description"
-      content="نحوّل فكرتك لموقع شغال خلال 7 أيام — أو لا تدفع شيئًا."
-    />
+    <meta name="twitter:description" content="نحوّل فكرتك لموقع شغال خلال 7 أيام — أو لا تدفع شيئًا." />
     <meta name="twitter:image" content="https://ico.bolt.host/og.jpg" />
 
-    <!-- Fonts (performance) -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -61,10 +46,9 @@
       rel="stylesheet"
     />
 
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="/favicon.png" />
 
-    <!-- ================= Google Tag Manager ================= -->
+    <!-- Google Tag Manager -->
     <script>
       (function (w, d, s, l, i) {
         w[l] = w[l] || [];
@@ -77,42 +61,8 @@
         f.parentNode.insertBefore(j, f);
       })(window, document, 'script', 'dataLayer', 'GTM-56J9S7S4');
     </script>
-    <!-- ====================================================== -->
 
-    <!-- OPTIONAL: Meta Pixel (Only if you will run Meta ads) -->
-    <!--
-    <script>
-      !(function (f, b, e, v, n, t, s) {
-        if (f.fbq) return;
-        n = f.fbq = function () {
-          n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
-        };
-        if (!f._fbq) f._fbq = n;
-        n.push = n;
-        n.loaded = !0;
-        n.version = '2.0';
-        n.queue = [];
-        t = b.createElement(e);
-        t.async = !0;
-        t.src = v;
-        s = b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t, s);
-      })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', 'XXXXXXXXXXXXXXX');
-      fbq('track', 'PageView');
-    </script>
-    <noscript>
-      <img
-        height="1"
-        width="1"
-        style="display: none"
-        src="https://www.facebook.com/tr?id=XXXXXXXXXXXXXXX&ev=PageView&noscript=1"
-      />
-    </noscript>
-    -->
-    <!-- End Meta Pixel -->
-
-    <!-- JSON-LD (Organization) -->
+    <!-- JSON-LD -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -133,7 +83,7 @@
   </head>
 
   <body>
-    <!-- Google Tag Manager (noscript) -->
+    <!-- GTM (noscript) MUST be first in body -->
     <noscript>
       <iframe
         src="https://www.googletagmanager.com/ns.html?id=GTM-56J9S7S4"
@@ -141,15 +91,9 @@
         width="0"
         style="display: none; visibility: hidden"
       ></iframe>
-      <div>
-        icode — استوديو برمجة احترافي. هذا الموقع يحتاج تفعيل JavaScript لعرض المحتوى.
-      </div>
     </noscript>
-    <!-- End Google Tag Manager (noscript) -->
 
     <div id="root"></div>
-
-    <!-- Vite + React (أفضل في آخر الـbody للأداء) -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
