@@ -128,8 +128,7 @@ export function Home() {
                   التي تصنع الفارق
                 </h1>
                 <p className="text-lg md:text-xl text-secondary-600 dark:text-secondary-300 mb-8 leading-relaxed animate-slide-up">
-                  استوديو برمجة احترافي متخصص في تطوير المواقع، التطبيقات، والأنظمة المخصصة بأعلى معايير الجودة
-                </p>
+نحوّل فكرتك لموقع شغال خلال 7 أيام أو لا تدفع شيئًا                </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-slide-up animation-delay-200">
                   <Link to="/contact">
                     <Button size="lg" icon={ArrowLeft}>
