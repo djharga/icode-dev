@@ -1,84 +1,98 @@
-import { ButtonHTMLAttributes, ReactNode } from 'react';
-import { LucideIcon } from 'lucide-react';
+// src/components/ui/Button.tsx (FULL UPDATED — no hover jitter, RTL-safe, fixed dimensions)
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  icon?: LucideIcon;
-  iconPosition?: 'left' | 'right';
-  children: ReactNode;
+import React from 'react';
+
+type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
+type ButtonSize = 'sm' | 'md' | 'lg';
+
+type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  icon?: React.ElementType;
+  iconPosition?: 'start' | 'end';
+};
+
+function cn(...classes: Array<string | false | null | undefined>) {
+  return classes.filter(Boolean).join(' ');
 }
 
 export function Button({
   variant = 'primary',
   size = 'md',
   icon: Icon,
-  iconPosition = 'right',
+  iconPosition = 'end',
+  className,
   children,
-  className = '',
-  ...props
-}: ButtonProps) {
-  // Premium motion (حديث + غير “قديم”)
-  const baseStyles =
-    [
-      'inline-flex items-center justify-center gap-2 font-semibold rounded-xl',
-      'select-none whitespace-nowrap',
-      // حركة حديثة: أهدى + easing عالمي
-      'transition-[transform,box-shadow,background-color,color,border-color,opacity] duration-300',
-      '[transition-timing-function:cubic-bezier(0.16,1,0.3,1)]',
-      // مهم: يمنع أي parent يفرض opacity = 0 بالخطأ
-      'opacity-100',
-      // States
-      'disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none',
-      // Focus premium
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/60 focus-visible:ring-offset-2',
-      'focus-visible:ring-offset-white dark:focus-visible:ring-offset-secondary-900',
-      // Hover subtle lift
-      'hover:-translate-y-0.5 active:translate-y-0',
-    ].join(' ');
+  type = 'button',
+  ...rest
+}: Props) {
+  const base =
+    // ✅ ثبات أبعاد + منع التقطيع
+    'inline-flex items-center justify-center gap-2 rounded-xl font-semibold ' +
+    'whitespace-nowrap select-none ' +
+    'outline-none focus-visible:ring-2 focus-visible:ring-primary-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-secondary-900 ' +
+    // ✅ انتقالات ألوان/ظل فقط (بدون translate/scale)
+    'transition-colors transition-shadow duration-200 ' +
+    'disabled:opacity-60 disabled:cursor-not-allowed ' +
+    // ✅ ثبّت الحدود دائماً (مهم جداً لمنع jitter)
+    'border border-transparent';
 
-  const variants = {
-    primary: [
-      'bg-primary-600 text-white',
-      'hover:bg-primary-700',
-      'shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30',
-    ].join(' '),
-
-    secondary: [
-      'bg-secondary-600 text-white',
-      'hover:bg-secondary-700',
-      'shadow-lg shadow-secondary-500/20 hover:shadow-xl hover:shadow-secondary-500/25',
-    ].join(' '),
-
-    // مهم: outline في dark لازم يبقى واضح حتى بدون hover
-    outline: [
-      'border-2',
-      'border-primary-600 text-primary-700',
-      'hover:bg-primary-600 hover:text-white',
-      'dark:border-primary-400 dark:text-primary-200',
-      'dark:hover:bg-primary-500 dark:hover:text-white',
-      // تحسين: خلفية خفيفة جدًا عشان الزر مايبقاش “مموه” فوق هيرو أزرق
-      'bg-white/10 dark:bg-white/5',
-      'hover:shadow-lg hover:shadow-primary-500/15',
-    ].join(' '),
-
-    ghost: [
-      'text-primary-700 dark:text-primary-200',
-      'hover:bg-primary-50 dark:hover:bg-primary-900/20',
-    ].join(' '),
+  const sizes: Record<ButtonSize, string> = {
+    sm: 'h-10 px-4 text-sm',
+    md: 'h-11 px-5 text-base',
+    lg: 'h-12 px-6 text-base',
   };
 
-  const sizes = {
-    sm: 'px-4 py-2 text-sm',
-    md: 'px-6 py-3 text-base',
-    lg: 'px-8 py-4 text-lg',
+  const variants: Record<ButtonVariant, string> = {
+    primary:
+      'bg-primary-600 text-white shadow-sm ' +
+      'hover:bg-primary-700 hover:shadow-md ' +
+      'active:bg-primary-800',
+    secondary:
+      'bg-secondary-800 text-white shadow-sm ' +
+      'hover:bg-secondary-700 hover:shadow-md ' +
+      'active:bg-secondary-900',
+    outline:
+      // ✅ border ثابت قبل وبعد hover + لا تغيير padding
+      'bg-transparent text-primary-700 dark:text-primary-300 ' +
+      'border-primary-600/80 dark:border-primary-400/70 ' +
+      'hover:bg-primary-50 dark:hover:bg-primary-900/20 ' +
+      'hover:shadow-sm active:bg-primary-100/60 dark:active:bg-primary-900/30',
+    ghost:
+      'bg-transparent text-secondary-800 dark:text-secondary-200 ' +
+      'hover:bg-secondary-100 dark:hover:bg-secondary-800/60 ' +
+      'active:bg-secondary-200 dark:active:bg-secondary-800',
   };
+
+  const iconNode = Icon ? (
+    <span className="inline-flex items-center justify-center w-5 h-5 shrink-0">
+      <Icon className="w-5 h-5" />
+    </span>
+  ) : null;
+
+  // RTL: افتراضياً الأيقونة "end" في العربية تبقى يسار النص (شكل زر سهم ← مناسب)
+  const content =
+    iconNode && iconPosition === 'start' ? (
+      <>
+        {iconNode}
+        <span>{children}</span>
+      </>
+    ) : iconNode && iconPosition === 'end' ? (
+      <>
+        <span>{children}</span>
+        {iconNode}
+      </>
+    ) : (
+      <span>{children}</span>
+    );
 
   return (
-    <button className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`} {...props}>
-      {Icon && iconPosition === 'left' && <Icon className="w-5 h-5" aria-hidden="true" />}
-      {children}
-      {Icon && iconPosition === 'right' && <Icon className="w-5 h-5" aria-hidden="true" />}
+    <button
+      type={type}
+      className={cn(base, sizes[size], variants[variant], className)}
+      {...rest}
+    >
+      {content}
     </button>
   );
 }
