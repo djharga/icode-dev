@@ -6,16 +6,18 @@
   :root { color-scheme: light; }
   .dark { color-scheme: dark; }
 
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 96px;
+    overflow-x: hidden; /* منع سكرول أفقي عالمي */
+  }
+
   body {
     @apply bg-white dark:bg-secondary-900 text-secondary-900 dark:text-white font-arabic;
     font-feature-settings: "kern" 1, "liga" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-  }
-
-  html {
-    scroll-behavior: smooth;
-    scroll-padding-top: 96px;
+    overflow-x: hidden; /* منع سكرول أفقي عالمي */
   }
 
   /* انتقالات فقط للعناصر التفاعلية */
@@ -23,6 +25,17 @@
     transition-property: background-color, border-color, color, opacity, box-shadow, transform;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 180ms;
+  }
+
+  /* تحسين عالمي: Focus ring نظيف وواضح (Accessiblity) */
+  :focus-visible {
+    outline: 2px solid rgba(59, 130, 246, 0.7);
+    outline-offset: 3px;
+  }
+
+  /* تحسين عالمي: اختيار النص */
+  ::selection {
+    background: rgba(59, 130, 246, 0.25);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -37,6 +50,22 @@
 }
 
 @layer components {
+  /* حاوية موحدة */
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* ضبط المسافات: أقل “هواء” — شكل عالمي */
+  .section-padding {
+    @apply py-12 md:py-16 lg:py-20;
+  }
+
+  /* نسخ لسيكشن هيرو لو عايز أكبر */
+  .section-padding-hero {
+    @apply pt-20 pb-14 md:pt-24 md:pb-16 lg:pt-28 lg:pb-20;
+  }
+
+  /* Glass محسّن عالمياً */
   .glass {
     @apply bg-white/70 dark:bg-secondary-900/60 backdrop-blur-xl;
     border: 1px solid rgba(148, 163, 184, 0.18);
@@ -49,6 +78,7 @@
     box-shadow: 0 18px 60px rgba(2, 6, 23, 0.18);
   }
 
+  /* Gradients */
   .gradient-primary {
     @apply bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700;
   }
@@ -65,20 +95,13 @@
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-500 to-primary-700;
   }
 
+  /* تأثيرات “عالمية” بدون مبالغة */
   .hover-lift {
-    @apply transition-transform duration-300 hover:-translate-y-2;
+    @apply transition-transform duration-300 hover:-translate-y-1;
   }
 
   .hover-glow {
-    @apply transition-shadow duration-300 hover:shadow-xl hover:shadow-primary-500/20;
-  }
-
-  .section-padding {
-    @apply py-16 md:py-24 lg:py-32;
-  }
-
-  .container-custom {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    @apply transition-shadow duration-300 hover:shadow-xl hover:shadow-primary-500/15;
   }
 }
 
@@ -93,28 +116,29 @@
   .animate-fade-in { animation: fadeInScale 0.8s ease-out forwards; }
   .animate-slide-up { animation: fadeInUp 0.8s ease-out forwards; }
 
-  .shadow-soft { box-shadow: 0 20px 60px rgba(2, 6, 23, 0.18); }
+  /* ظل أنعم وأقرب لمنتجات عالمية */
+  .shadow-soft { box-shadow: 0 18px 50px rgba(2, 6, 23, 0.14); }
 
   .bg-grid {
-    background-image: radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.25) 1px, transparent 0);
+    background-image: radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.22) 1px, transparent 0);
     background-size: 28px 28px;
   }
 
   .bg-radial-spotlight {
     background:
-      radial-gradient(800px circle at 20% 10%, rgba(14, 165, 233, 0.18), transparent 55%),
-      radial-gradient(700px circle at 80% 20%, rgba(99, 102, 241, 0.14), transparent 55%);
+      radial-gradient(900px circle at 20% 10%, rgba(14, 165, 233, 0.16), transparent 55%),
+      radial-gradient(800px circle at 80% 20%, rgba(99, 102, 241, 0.12), transparent 55%);
   }
 
-  .card-border { border: 1px solid rgba(148, 163, 184, 0.25); }
+  .card-border { border: 1px solid rgba(148, 163, 184, 0.22); }
 }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
+  from { opacity: 0; transform: translateY(24px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeInScale {
-  from { opacity: 0; transform: scale(0.95); }
+  from { opacity: 0; transform: scale(0.96); }
   to { opacity: 1; transform: scale(1); }
 }
