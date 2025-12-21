@@ -1,4 +1,4 @@
-// src/App.tsx (FULL UPDATED — includes FloatingWhatsApp mounted + no overlap + clean 404)
+// src/App.tsx (FULL UPDATED — no dead code, clean globals)
 
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { ThemeProvider } from './contexts/ThemeContext';
