@@ -1,16 +1,21 @@
-// src/pages/About.tsx (FULL UPDATED — Funnel + GTM + WhatsApp unified + no overflow)
+// src/pages/About.tsx (FULL REWRITE — "العقل قبل اللسان" + ثقة حقيقية + Funnel-only)
+// التغيير هنا: كتابة قوية واقعية تقلّل الملل وتزود الثقة بدون مبالغة
+// نفس المكونات: Card + Button + lucide + GTM + WhatsApp موحّد
+// Copy-Paste جاهز
 
 import { Link } from 'react-router-dom';
 import {
   Target,
   Eye,
-  Heart,
-  Code2,
   Shield,
   Zap,
   Users,
   TrendingUp,
   ArrowLeft,
+  CheckCircle,
+  BadgeCheck,
+  Timer,
+  MessageCircle,
 } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -27,82 +32,105 @@ function pushDL(event: string, payload: Record<string, unknown> = {}) {
 }
 
 export function About() {
+  // ===== Funnel config (موحّد) =====
   const WHATSAPP_PHONE = '201507619503';
   const WHATSAPP_PREFILL = encodeURIComponent(
     [
       'عايز أعرف تفاصيل أكتر عن خدماتكم.',
       '',
       'نوع المشروع:',
-      'الهدف:',
+      'الهدف (مبيعات/حجز/تعريف):',
       'الميزانية:',
       'موعد الإطلاق:',
+      'هل المحتوى جاهز؟ (نعم/جزئي/لا):',
+      'عدد الصفحات/الأقسام:',
       'تفاصيل مختصرة:',
     ].join('\n')
   );
   const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_PHONE}?text=${WHATSAPP_PREFILL}`;
 
-  const values = [
+  const proof = [
     {
-      icon: Heart,
-      title: 'الشغف بالتميز',
-      description: 'نسعى دائماً لتقديم أفضل ما لدينا في كل مشروع',
+      icon: Timer,
+      title: 'موعد واضح',
+      desc: 'نشتغل بوقت محدد وتسليمات محددة. مفيش “هنشوف”.',
     },
     {
       icon: Shield,
-      title: 'الأمانة والشفافية',
-      description: 'نلتزم بالوضوح الكامل في التواصل والتعاملات',
-    },
-    {
-      icon: Users,
-      title: 'التركيز على العميل',
-      description: 'نجاح عملائنا هو نجاحنا، ونضع احتياجاتهم في المقام الأول',
-    },
-    {
-      icon: Zap,
-      title: 'الابتكار المستمر',
-      description: 'نواكب أحدث التقنيات ونطبق أفضل الممارسات',
+      title: 'نطاق مكتوب',
+      desc: 'قبل ما نبدأ: نثبت الـ Scope عشان مفيش مفاجآت ولا شد وجذب.',
     },
     {
       icon: TrendingUp,
-      title: 'التطوير المستمر',
-      description: 'نستثمر في تطوير مهاراتنا ومعرفتنا باستمرار',
+      title: 'هدف واحد',
+      desc: 'الموقع مش للمنظر. يا Lead يا حجز يا بيع — وإلا يبقى ضوضاء.',
     },
     {
-      icon: Code2,
-      title: 'الجودة قبل السرعة',
-      description: 'لا نساوم على جودة الكود أو المنتج النهائي',
+      icon: BadgeCheck,
+      title: 'جودة قابلة للصيانة',
+      desc: 'كود نظيف ومعايير واضحة عشان الموقع يفضل شغال ويتطور بسهولة.',
     },
   ];
 
-  const techStacks = {
-    frontend: ['React', 'Next.js', 'Vue.js', 'TypeScript', 'Tailwind CSS', 'Redux'],
-    backend: ['Node.js', 'Python', 'Django', 'Express', 'NestJS', 'FastAPI'],
-    mobile: ['React Native', 'Flutter', 'Expo', 'iOS Native', 'Android Native'],
-    database: ['PostgreSQL', 'MongoDB', 'MySQL', 'Redis', 'Supabase', 'Firebase'],
-    devops: ['Docker', 'Kubernetes', 'AWS', 'CI/CD', 'Nginx', 'GitHub Actions'],
-    other: ['GraphQL', 'WebSocket', 'REST API', 'Microservices', 'TensorFlow', 'WebRTC'],
-  };
+  const values = [
+    {
+      title: 'الوضوح قبل الحماس',
+      points: [
+        'بنقول ينفع وإمتى… ومينفعش وإمتى.',
+        'لو المشروع محتاج وقت أكتر: بنصرّح قبل ما تبدأ تدفع.',
+      ],
+    },
+    {
+      title: 'النتيجة قبل الشكل',
+      points: [
+        'نرتب الصفحة على مسار قرار العميل.',
+        'CTA واضح: واتساب/عرض 7 أيام. بدون تشتيت.',
+      ],
+    },
+    {
+      title: 'الالتزام قبل الوعود',
+      points: [
+        'تسليمات على مراحل.',
+        'مراجعات ضمن النطاق المتفق عليه.',
+      ],
+    },
+  ];
 
   const methodology = [
     {
-      phase: 'التحليل والفهم',
-      description: 'نبدأ بفهم عميق لأهداف المشروع واحتياجات العمل',
+      phase: '1) فهم الهدف',
+      desc: 'نسألك سؤالين صح: عايز إيه يحصل للزائر؟ (يتواصل/يحجز/يشتري).',
     },
     {
-      phase: 'التخطيط والتصميم',
-      description: 'نضع خطة تفصيلية ونصمم المعمارية والواجهات',
+      phase: '2) تثبيت النطاق',
+      desc: 'نكتب الـ Scope: صفحات، أقسام، محتوى، Integrations. ده اللي عليه الضمان.',
     },
     {
-      phase: 'التطوير المرن',
-      description: 'نطبق منهجية Agile مع تسليمات تدريجية',
+      phase: '3) بناء Funnel',
+      desc: 'نرتّب الصفحة زي طريق مختصر: من الفضول → ثقة → قرار → تواصل.',
     },
     {
-      phase: 'الاختبار الشامل',
-      description: 'نختبر كل جزء لضمان الجودة والأداء',
+      phase: '4) أداء + أمان أساسي',
+      desc: 'سرعة تحميل + حماية النماذج + إعدادات أساسية تقلل المخاطر.',
     },
     {
-      phase: 'الإطلاق والمتابعة',
-      description: 'نطلق المشروع ونقدم دعماً مستمراً',
+      phase: '5) إطلاق + قياس',
+      desc: 'نركّب Events لقياس الضغطات والـ Leads عشان تعرف الحقيقة بالأرقام.',
+    },
+  ];
+
+  const faqs = [
+    {
+      q: 'أنا خايف أدفع وبعدين ألاقي كلام كتير ونتيجة قليلة.',
+      a: 'ده بالضبط سبب إننا بنقفل النطاق كتابة الأول. لو النطاق واضح: التنفيذ واضح. لو مش واضح: بنقولك قبل ما تبدأ.',
+    },
+    {
+      q: 'ليه بتضغطوا على واتساب؟',
+      a: 'لأن أسرع تحويل في السوق المحلي هو واتساب. هدفنا Lead حقيقي مش “زيارة”.',
+    },
+    {
+      q: 'هل “7 أيام” حقيقي؟',
+      a: 'حقيقي لنطاق محدد ومحتوى متوفر. أي توسع كبير = وقت أكبر. وده بيتقال قبل البداية مش بعد الدفع.',
     },
   ];
 
@@ -111,13 +139,22 @@ export function About() {
       {/* HERO */}
       <section className="section-padding gradient-primary text-white">
         <div className="container-custom">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">من نحن</h1>
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/15 mb-6">
+              <Target className="w-4 h-4" />
+              <span className="text-sm font-semibold">من نحن — بشكل يفهمه العقل</span>
+            </div>
+
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+              إحنا مش بنبني “موقع”… إحنا بنبني <span className="text-white/90">نتيجة</span>
+            </h1>
+
             <p className="text-xl md:text-2xl leading-relaxed text-white/90">
-              نحن فريق من المطورين المتخصصين الذين يؤمنون بقوة التكنولوجيا في تحويل الأفكار إلى واقع رقمي ناجح
+              لو الزائر دخل ومفهمش في 5 ثواني “إنت مين وبتحل إيه” هيمشي.  
+              شغلنا: نخلي القرار أسهل من التفكير.
             </p>
 
-            {/* CTA (funnel) */}
+            {/* Funnel CTA */}
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 to="/offer"
@@ -132,243 +169,217 @@ export function About() {
                 href={WHATSAPP_LINK}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() => pushDL('lead_click', { source: 'about_hero_whatsapp' })}
+                onClick={() =>
+                  pushDL('lead_click', { source: 'about_hero', channel: 'whatsapp', target: 'wa' })
+                }
               >
                 <Button
                   size="lg"
                   variant="outline"
                   className="border-white/70 text-white bg-white/10 hover:bg-white/20 hover:text-white hover:border-white/90"
                 >
-                  تواصل سريع
+                  ابعت “فضول” على واتساب
                 </Button>
               </a>
             </div>
+
+            <p className="mt-5 text-sm text-white/80">
+              لو عندك فكرة مش واضحة… ده الطبيعي. ابعت بس “فضول” وهنبعتلك أسئلة قصيرة تخلّص الصورة.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* MISSION + VISION */}
+      {/* QUICK PROOF */}
       <section className="section-padding">
         <div className="container-custom">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-4xl font-bold text-secondary-900 dark:text-white mb-6">رسالتنا</h2>
-              <div className="flex items-start gap-4 mb-8">
-                <div className="w-16 h-16 gradient-primary rounded-2xl flex items-center justify-center flex-shrink-0">
-                  <Target className="w-8 h-8 text-white" />
-                </div>
-                <div>
-                  <p className="text-lg text-secondary-600 dark:text-secondary-300 leading-relaxed">
-                    تمكين الأعمال من خلال حلول برمجية مبتكرة وعالية الجودة تساعدها على النمو والتميز في العصر الرقمي.
-                    نلتزم بتقديم قيمة حقيقية لعملائنا من خلال فهم عميق لاحتياجاتهم وتحويلها إلى منتجات تقنية متفوقة.
-                  </p>
-                </div>
-              </div>
-
-              {/* Small CTA */}
-              <Link
-                to="/services"
-                onClick={() => pushDL('nav_click', { target: '/services', source: 'about_mission' })}
-              >
-                <Button variant="outline" icon={ArrowLeft}>
-                  عرض خدماتنا
-                </Button>
-              </Link>
-            </div>
-
-            <div>
-              <h2 className="text-4xl font-bold text-secondary-900 dark:text-white mb-6">رؤيتنا</h2>
-              <div className="flex items-start gap-4">
-                <div className="w-16 h-16 gradient-primary rounded-2xl flex items-center justify-center flex-shrink-0">
-                  <Eye className="w-8 h-8 text-white" />
-                </div>
-                <div>
-                  <p className="text-lg text-secondary-600 dark:text-secondary-300 leading-relaxed">
-                    أن نكون الخيار الأول للشركات والمؤسسات في المنطقة عندما يتعلق الأمر بالحلول البرمجية المتقدمة.
-                    نطمح لبناء علاقات طويلة الأمد مع عملائنا تقوم على الثقة والنتائج الملموسة.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* WHY DIFFERENT */}
-      <section className="section-padding bg-secondary-50 dark:bg-secondary-900">
-        <div className="container-custom">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-secondary-900 dark:text-white mb-6">
-              لماذا icode مختلف؟
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-secondary-900 dark:text-white mb-4">
+              4 نقاط… لو موجودين ترتاح
             </h2>
-            <p className="text-xl text-secondary-600 dark:text-secondary-300 max-w-3xl mx-auto">
-              نجمع بين الخبرة التقنية العميقة والفهم الشامل لاحتياجات الأعمال
+            <p className="text-lg text-secondary-600 dark:text-secondary-300">
+              لأن اللي بيكسب ثقة العميل: وضوح + التزام + نتيجة.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                title: 'خبرة تقنية متعمقة',
-                description: 'فريقنا يتمتع بخبرة واسعة في أحدث التقنيات وأفضل الممارسات البرمجية',
-              },
-              {
-                title: 'فهم احتياجات الأعمال',
-                description: 'لا نبني تقنية من أجل التقنية، بل نبني حلولاً تخدم أهداف عملك',
-              },
-              {
-                title: 'التزام بالمواعيد',
-                description: 'نحترم وقتك ونلتزم بالجداول الزمنية المتفق عليها',
-              },
-              {
-                title: 'كود نظيف وموثق',
-                description: 'نكتب كوداً عالي الجودة سهل الصيانة والتطوير مستقبلاً',
-              },
-              {
-                title: 'دعم مستمر',
-                description: 'علاقتنا بعملائنا لا تنتهي بتسليم المشروع، نقدم دعماً مستمراً',
-              },
-              {
-                title: 'أسعار شفافة',
-                description: 'لا توجد تكاليف مخفية، كل شيء واضح ومتفق عليه من البداية',
-              },
-            ].map((item, index) => (
-              <Card key={index} className="p-8" hover>
-                <h3 className="text-xl font-bold text-secondary-900 dark:text-white mb-3">{item.title}</h3>
-                <p className="text-secondary-600 dark:text-secondary-300 leading-relaxed">
-                  {item.description}
-                </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {proof.map((p) => (
+              <Card key={p.title} className="p-7" hover>
+                <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mb-4">
+                  <p.icon className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-lg font-bold text-secondary-900 dark:text-white mb-2">{p.title}</h3>
+                <p className="text-secondary-600 dark:text-secondary-300 leading-relaxed">{p.desc}</p>
               </Card>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* MISSION + VISION (بلهجة واضحة) */}
+      <section className="section-padding bg-secondary-50 dark:bg-secondary-900">
+        <div className="container-custom">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <Card className="p-10" hover>
+              <div className="flex items-center gap-3 mb-4">
+                <Target className="w-6 h-6 text-primary-600" />
+                <h2 className="text-2xl font-bold text-secondary-900 dark:text-white">رسالتنا</h2>
+              </div>
+              <p className="text-secondary-600 dark:text-secondary-300 leading-relaxed">
+                نخلي مشروعك “مفهوم” قبل ما يبقى “جميل”.  
+                نرتّب الكلام، نثبت النطاق، ونطلع بموقع يجيب تواصل حقيقي — مش مجرد زيارة.
+              </p>
+            </Card>
+
+            <Card className="p-10" hover>
+              <div className="flex items-center gap-3 mb-4">
+                <Eye className="w-6 h-6 text-primary-600" />
+                <h2 className="text-2xl font-bold text-secondary-900 dark:text-white">رؤيتنا</h2>
+              </div>
+              <p className="text-secondary-600 dark:text-secondary-300 leading-relaxed">
+                نبقى الاختيار اللي العميل يرجعله… لأن التجربة كانت واضحة ومريحة ونتيجتها ملموسة.  
+                الثقة عندنا مش شعار. الثقة عندنا نظام شغل.
+              </p>
+            </Card>
+          </div>
 
           {/* Mid CTA */}
-          <div className="text-center mt-12">
+          <div className="text-center mt-10">
             <Link
               to="/offer"
-              onClick={() => pushDL('nav_click', { target: '/offer', source: 'about_why' })}
+              onClick={() => pushDL('nav_click', { target: '/offer', source: 'about_mid' })}
             >
               <Button size="lg" variant="outline" icon={ArrowLeft}>
-                افتح عرض 7 أيام
+                شوف تفاصيل عرض 7 أيام
               </Button>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* VALUES */}
+      {/* VALUES (أقوى وأقصر) */}
       <section className="section-padding">
         <div className="container-custom">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-secondary-900 dark:text-white mb-6">قيمنا الأساسية</h2>
-            <p className="text-xl text-secondary-600 dark:text-secondary-300">المبادئ التي توجه عملنا اليومي</p>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-secondary-900 dark:text-white mb-4">
+              مبادئنا (على الأرض)
+            </h2>
+            <p className="text-lg text-secondary-600 dark:text-secondary-300">
+              كلام بسيط… بس لو اتطبق يفرق.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {values.map((value, index) => (
-              <Card key={index} className="p-8 text-center" hover>
-                <div className="w-16 h-16 gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <value.icon className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-secondary-900 dark:text-white mb-3">{value.title}</h3>
-                <p className="text-secondary-600 dark:text-secondary-300 leading-relaxed">{value.description}</p>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {values.map((v) => (
+              <Card key={v.title} className="p-8" hover>
+                <h3 className="text-xl font-bold text-secondary-900 dark:text-white mb-4">{v.title}</h3>
+                <ul className="space-y-3">
+                  {v.points.map((x) => (
+                    <li key={x} className="flex items-start gap-2 text-secondary-700 dark:text-secondary-200">
+                      <CheckCircle className="w-5 h-5 text-success-500 mt-0.5 flex-shrink-0" />
+                      <span className="leading-relaxed">{x}</span>
+                    </li>
+                  ))}
+                </ul>
               </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* METHODOLOGY */}
+      {/* METHODOLOGY (مباشر وسريع) */}
       <section className="section-padding bg-secondary-900 text-white">
         <div className="container-custom">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-6">طريقة عملنا</h2>
-            <p className="text-xl text-secondary-300">منهجية Agile مع التركيز على الجودة والتواصل</p>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">بنمشي إزاي؟</h2>
+            <p className="text-lg text-secondary-300">5 خطوات… مفيهاش لف.</p>
           </div>
 
-          <div className="max-w-4xl mx-auto">
-            <div className="space-y-6">
-              {methodology.map((step, index) => (
-                <div
-                  key={index}
-                  className="flex items-start gap-6 p-6 bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10"
-                >
-                  <div className="w-12 h-12 gradient-primary rounded-full flex items-center justify-center flex-shrink-0 text-xl font-bold">
-                    {index + 1}
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-bold mb-2">{step.phase}</h3>
-                    <p className="text-secondary-300">{step.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Method CTA */}
-            <div className="text-center mt-12">
-              <Link
-                to="/consultation"
-                onClick={() =>
-                  pushDL('nav_click', { target: '/consultation', source: 'about_methodology' })
-                }
+          <div className="max-w-4xl mx-auto space-y-5">
+            {methodology.map((m, i) => (
+              <div
+                key={m.phase}
+                className="flex items-start gap-5 p-6 bg-white/5 rounded-2xl border border-white/10"
               >
-                <Button size="lg" variant="secondary" icon={ArrowLeft}>
-                  احجز استشارة
-                </Button>
-              </Link>
-            </div>
+                <div className="w-10 h-10 gradient-primary rounded-full flex items-center justify-center font-bold">
+                  {i + 1}
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-1">{m.phase}</h3>
+                  <p className="text-secondary-300 leading-relaxed">{m.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-10">
+            <a
+              href={WHATSAPP_LINK}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() =>
+                pushDL('lead_click', { source: 'about_method', channel: 'whatsapp', target: 'wa' })
+              }
+            >
+              <Button size="lg" variant="secondary" icon={ArrowLeft}>
+                ابدأ بسؤال واحد على واتساب
+              </Button>
+            </a>
+            <p className="mt-4 text-sm text-secondary-300">
+              اكتب: “أنا محتاج موقع… ودي فكرتي” — وخلاص.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* TECH STACKS */}
+      {/* FAQ (قصير وواقعي) */}
       <section className="section-padding">
         <div className="container-custom">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-secondary-900 dark:text-white mb-6">
-              التقنيات التي نعمل بها
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-bold text-secondary-900 dark:text-white mb-3">
+              أسئلة بتتقال في دماغ العميل
             </h2>
-            <p className="text-xl text-secondary-600 dark:text-secondary-300">
-              نستخدم أحدث وأفضل التقنيات لبناء حلول قوية وقابلة للتوسع
-            </p>
+            <p className="text-lg text-secondary-600 dark:text-secondary-300">إجابات مباشرة.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {Object.entries(techStacks).map(([category, techs]) => (
-              <Card key={category} className="p-8" hover>
-                <h3 className="text-xl font-bold text-secondary-900 dark:text-white mb-6 capitalize">
-                  {category === 'frontend' && 'Frontend'}
-                  {category === 'backend' && 'Backend'}
-                  {category === 'mobile' && 'Mobile'}
-                  {category === 'database' && 'Databases'}
-                  {category === 'devops' && 'DevOps'}
-                  {category === 'other' && 'أخرى'}
-                </h3>
-
-                <div className="flex flex-wrap gap-2">
-                  {techs.map((tech) => (
-                    <span
-                      key={tech}
-                      className="px-3 py-2 bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 rounded-lg text-sm font-semibold"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
+          <div className="max-w-4xl mx-auto grid gap-6">
+            {faqs.map((f) => (
+              <Card key={f.q} className="p-8" hover>
+                <h3 className="text-xl font-bold mb-2 text-secondary-900 dark:text-white">{f.q}</h3>
+                <p className="text-secondary-600 dark:text-secondary-300 leading-relaxed">{f.a}</p>
               </Card>
             ))}
           </div>
 
           {/* FINAL CTA */}
           <div className="text-center mt-12">
-            <Link
-              to="/offer"
-              onClick={() => pushDL('nav_click', { target: '/offer', source: 'about_footer' })}
-            >
-              <Button size="lg" icon={ArrowLeft}>
-                افتح عرض 7 أيام
-              </Button>
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                to="/offer"
+                onClick={() => pushDL('nav_click', { target: '/offer', source: 'about_footer' })}
+              >
+                <Button size="lg" icon={ArrowLeft}>
+                  افتح عرض 7 أيام
+                </Button>
+              </Link>
+
+              <a
+                href={WHATSAPP_LINK}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() =>
+                  pushDL('lead_click', { source: 'about_footer', channel: 'whatsapp', target: 'wa' })
+                }
+              >
+                <Button size="lg" variant="outline" icon={MessageCircle}>
+                  تواصل الآن
+                </Button>
+              </a>
+            </div>
+
+            <p className="mt-4 text-sm text-secondary-500 dark:text-secondary-400">
+              عايزها سريعة؟ اكتب “عاجل” أول الرسالة.
+            </p>
           </div>
         </div>
       </section>
