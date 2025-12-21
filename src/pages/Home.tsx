@@ -1,12 +1,3 @@
-```tsx
-// src/pages/Home.tsx (FULL UPDATED — surgical, conversion-first, zero fake claims)
-// Goals:
-// - Stronger first-10-seconds clarity (who / what / outcome)
-// - Remove any fabricated social proof (fake clients / fake stats / fake “300%” claims)
-// - Keep funnel unchanged: Home -> WhatsApp OR /offer only
-// - Keep your structure, but upgrade weak sections to “credible” equivalents
-// - Keep animation-delay classes only: 200 / 400
-
 import { Link } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -17,7 +8,6 @@ import {
   Zap,
   Users,
   Award,
-  TrendingUp,
   CheckCircle,
 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
@@ -34,8 +24,9 @@ function pushDL(event: string, payload: Record<string, unknown> = {}) {
   window.dataLayer.push({ event, ...payload });
 }
 
+type IconType = React.ComponentType<{ className?: string }>;
+
 export function Home() {
-  // ====== CONFIG (REAL) ======
   const WHATSAPP_PHONE = '201507619503';
   const WHATSAPP_PREFILL = encodeURIComponent(
     [
@@ -54,8 +45,7 @@ export function Home() {
   );
   const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_PHONE}?text=${WHATSAPP_PREFILL}`;
 
-  // Services: OK (credible)
-  const services = [
+  const services: { icon: IconType; title: string; description: string }[] = [
     { icon: Code2, title: 'تطوير المواقع', description: 'مواقع سريعة، RTL جاهزة، وتجربة مستخدم واضحة' },
     { icon: Smartphone, title: 'تطبيقات الموبايل', description: 'حلول عملية حسب احتياجك (هجين/أصلي) مع خطة إطلاق' },
     { icon: Server, title: 'أنظمة مخصصة', description: 'لوحات تحكم + إدارة بيانات + صلاحيات + تقارير' },
@@ -64,9 +54,12 @@ export function Home() {
     { icon: Users, title: 'استشارات تقنية', description: 'قرار تقني سريع: ما الذي تبنيه؟ وكيف؟ وبأي تكلفة؟' },
   ];
 
-  // Replace “مشاريع مختارة” (was implying past work) with “نماذج حلول جاهزة للتنفيذ”
-  // No claim “we built”. These are examples of what you can deliver.
-  const solutionExamples = [
+  const solutionExamples: {
+    title: string;
+    category: string;
+    description: string;
+    deliverables: string[];
+  }[] = [
     {
       title: 'موقع شركة + صفحات خدمات',
       category: 'شركة / مكتب',
@@ -87,68 +80,36 @@ export function Home() {
     },
   ];
 
-  // Replace “Testimonials” fake with “ضمانات ثقة” (credible)
-  const trustPillars = [
-    {
-      icon: CheckCircle,
-      title: 'نطاق واضح قبل البدء',
-      desc: 'بنكتب المتطلبات والصفحات والتسليمات بوضوح عشان مفيش مفاجآت.',
-    },
-    {
-      icon: Shield,
-      title: 'أساسيات حماية',
-      desc: 'إعدادات أمان أولية: HTTPS، حماية نماذج، تهيئة هيدر/سياسات مناسبة حسب المشروع.',
-    },
-    {
-      icon: Zap,
-      title: 'أداء وتجربة مستخدم',
-      desc: 'أولوية للسرعة وسهولة الاستخدام بدل “زينة” لا تخدم الهدف.',
-    },
-    {
-      icon: Award,
-      title: 'كود نظيف',
-      desc: 'هيكلة قابلة للصيانة والتطوير بدل ترقيعات.',
-    },
+  const trustPillars: { icon: IconType; title: string; desc: string }[] = [
+    { icon: CheckCircle, title: 'نطاق واضح قبل البدء', desc: 'بنكتب المتطلبات والصفحات والتسليمات بوضوح عشان مفيش مفاجآت.' },
+    { icon: Shield, title: 'أساسيات حماية', desc: 'إعدادات أمان أولية: HTTPS، حماية نماذج، تهيئة سياسات مناسبة حسب المشروع.' },
+    { icon: Zap, title: 'أداء وتجربة مستخدم', desc: 'أولوية للسرعة وسهولة الاستخدام بدل “زينة” لا تخدم الهدف.' },
+    { icon: Award, title: 'كود نظيف', desc: 'هيكلة قابلة للصيانة والتطوير بدل ترقيعات.' },
   ];
 
-  // Replace fake “stats” with “مؤشرات تسليم” (no numbers)
-  const deliveryIndicators = [
+  const deliveryIndicators: { value: string; label: string }[] = [
     { value: '7 أيام', label: 'MVP سريع (للعرض المحدد)' },
     { value: 'RTL', label: 'واجهة عربية احترافية' },
     { value: 'أمان', label: 'إعدادات حماية أساسية' },
     { value: 'أداء', label: 'تحسين سرعة وتجربة' },
   ];
 
-  const workProcess = [
+  const workProcess: { number: string; title: string; description: string }[] = [
     { number: '01', title: 'تحديد النطاق', description: 'هدف الصفحة + الصفحات المطلوبة + مخرجات واضحة' },
     { number: '02', title: 'تصميم سريع', description: 'شكل عملي يخدم الهدف (مش تجميل فارغ)' },
     { number: '03', title: 'تطوير واختبار', description: 'بناء + مراجعة أداء + إصلاحات قبل التسليم' },
     { number: '04', title: 'إطلاق وتسليم', description: 'نشر + تسليم ملفات/حسابات + نقاط تشغيل واضحة' },
   ];
 
-  // FAQ (conversion + objection handling)
-  const faqs = [
-    {
-      q: 'هل “7 أيام” لكل المشاريع؟',
-      a: 'العرض مخصص لموقع/صفحات محددة بنطاق واضح (MVP). المشاريع الكبيرة أو الأنظمة العميقة لها جدول مختلف.',
-    },
-    {
-      q: 'إيه المطلوب مني عشان نبدأ؟',
-      a: 'فكرة واضحة + أمثلة مواقع تعجبك + لوجو/ألوان لو موجودة. والباقي بنرتبه معك.',
-    },
-    {
-      q: 'هل في ضمان؟',
-      a: 'الضمان مرتبط بالنطاق المكتوب: لو اتفقنا على صفحات/مخرجات ولم تُسلَّم كما هو، يتم التصحيح وفق الاتفاق.',
-    },
-    {
-      q: 'هل تقدم استضافة ودومين؟',
-      a: 'نقدر نساعدك في اختيار وتهيئة الدومين والاستضافة، أو نشتغل على حساباتك أنت.',
-    },
+  const faqs: { q: string; a: string }[] = [
+    { q: 'هل “7 أيام” لكل المشاريع؟', a: 'العرض مخصص لموقع/صفحات محددة بنطاق واضح (MVP). المشاريع الكبيرة أو الأنظمة العميقة لها جدول مختلف.' },
+    { q: 'إيه المطلوب مني عشان نبدأ؟', a: 'فكرة واضحة + أمثلة مواقع تعجبك + لوجو/ألوان لو موجودة. والباقي بنرتبه معك.' },
+    { q: 'هل في ضمان؟', a: 'الضمان مرتبط بالنطاق المكتوب: لو اتفقنا على صفحات/مخرجات ولم تُسلَّم كما هو، يتم التصحيح وفق الاتفاق.' },
+    { q: 'هل تقدم استضافة ودومين؟', a: 'نقدر نساعدك في اختيار وتهيئة الدومين والاستضافة، أو نشتغل على حساباتك أنت.' },
   ];
 
   return (
     <div className="min-h-screen">
-      {/* HERO */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
         <div className="absolute inset-0 gradient-primary opacity-10 bg-noise" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/50 to-white dark:via-secondary-900/50 dark:to-secondary-900" />
@@ -163,7 +124,6 @@ export function Home() {
                   بنطاق واضح ونتيجة ملموسة
                 </h1>
 
-                {/* Stronger promise: keep your offer but make it credible */}
                 <p className="text-lg md:text-xl text-secondary-600 dark:text-secondary-300 mb-3 leading-relaxed animate-slide-up">
                   موقع شغال خلال 7 أيام (للعرض المحدد) — بنطاق مكتوب وتسليمات واضحة.
                 </p>
@@ -189,7 +149,6 @@ export function Home() {
                   ))}
                 </div>
 
-                {/* CTA: WhatsApp + /offer only */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-slide-up animation-delay-400">
                   <a
                     href={WHATSAPP_LINK}
@@ -246,7 +205,6 @@ export function Home() {
               </div>
             </div>
 
-            {/* QUICK PROOF STRIP (credible, no fake numbers) */}
             <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-3">
               {deliveryIndicators.map((it, idx) => (
                 <Card key={idx} className="p-4 text-center" hover>
@@ -259,7 +217,6 @@ export function Home() {
         </div>
       </section>
 
-      {/* WHY US -> rewrite copy to be concrete */}
       <section className="section-padding bg-secondary-50 dark:bg-secondary-900">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center mb-16">
@@ -283,12 +240,8 @@ export function Home() {
             ))}
           </div>
 
-          {/* MID CTA (route to offer) */}
           <div className="text-center mt-12">
-            <Link
-              to="/offer"
-              onClick={() => pushDL('nav_click', { target: '/offer', source: 'home_whyus' })}
-            >
+            <Link to="/offer" onClick={() => pushDL('nav_click', { target: '/offer', source: 'home_whyus' })}>
               <Button size="lg" variant="outline" icon={ArrowLeft}>
                 افتح عرض 7 أيام
               </Button>
@@ -297,13 +250,10 @@ export function Home() {
         </div>
       </section>
 
-      {/* SERVICES */}
       <section className="section-padding">
         <div className="container-custom">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-secondary-900 dark:text-white mb-6">
-              خدماتنا
-            </h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-secondary-900 dark:text-white mb-6">خدماتنا</h2>
             <p className="text-xl text-secondary-600 dark:text-secondary-300">
               اختَر ما يناسب احتياجك — أو ابدأ بالعرض السريع ثم نوسع لاحقًا.
             </p>
@@ -320,10 +270,7 @@ export function Home() {
           </div>
 
           <div className="text-center mt-12">
-            <Link
-              to="/services"
-              onClick={() => pushDL('nav_click', { target: '/services', source: 'home_services' })}
-            >
+            <Link to="/services" onClick={() => pushDL('nav_click', { target: '/services', source: 'home_services' })}>
               <Button size="lg" variant="outline" icon={ArrowLeft}>
                 عرض جميع الخدمات
               </Button>
@@ -332,7 +279,6 @@ export function Home() {
         </div>
       </section>
 
-      {/* PROCESS */}
       <section className="section-padding bg-secondary-900 text-white">
         <div className="container-custom">
           <div className="text-center mb-16">
@@ -352,12 +298,8 @@ export function Home() {
             ))}
           </div>
 
-          {/* PROCESS CTA */}
           <div className="text-center mt-12">
-            <Link
-              to="/offer"
-              onClick={() => pushDL('nav_click', { target: '/offer', source: 'home_process' })}
-            >
+            <Link to="/offer" onClick={() => pushDL('nav_click', { target: '/offer', source: 'home_process' })}>
               <Button size="lg" variant="secondary" icon={ArrowLeft}>
                 ابدأ بعرض 7 أيام
               </Button>
@@ -366,7 +308,6 @@ export function Home() {
         </div>
       </section>
 
-      {/* SOLUTION EXAMPLES (credible replacement for “Projects”) */}
       <section className="section-padding">
         <div className="container-custom">
           <div className="text-center mb-16">
@@ -386,11 +327,8 @@ export function Home() {
                   <span className="inline-block px-4 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 rounded-full text-sm font-semibold mb-4">
                     {item.category}
                   </span>
-                  <h3 className="text-2xl font-bold text-secondary-900 dark:text-white mb-3">
-                    {item.title}
-                  </h3>
+                  <h3 className="text-2xl font-bold text-secondary-900 dark:text-white mb-3">{item.title}</h3>
                   <p className="text-secondary-600 dark:text-secondary-300 mb-6">{item.description}</p>
-
                   <div className="flex flex-wrap gap-2">
                     {item.deliverables.map((d) => (
                       <span
@@ -407,10 +345,7 @@ export function Home() {
           </div>
 
           <div className="text-center mt-12">
-            <Link
-              to="/offer"
-              onClick={() => pushDL('nav_click', { target: '/offer', source: 'home_solution_examples' })}
-            >
+            <Link to="/offer" onClick={() => pushDL('nav_click', { target: '/offer', source: 'home_solution_examples' })}>
               <Button size="lg" variant="outline" icon={ArrowLeft}>
                 اختَر العرض المناسب
               </Button>
@@ -419,16 +354,11 @@ export function Home() {
         </div>
       </section>
 
-      {/* FAQ (replaces fake testimonials) */}
       <section className="section-padding bg-secondary-50 dark:bg-secondary-900">
         <div className="container-custom">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-secondary-900 dark:text-white mb-6">
-              أسئلة سريعة قبل البدء
-            </h2>
-            <p className="text-xl text-secondary-600 dark:text-secondary-300">
-              إجابات واضحة لتقليل القلق والتردد.
-            </p>
+            <h2 className="text-4xl md:text-5xl font-bold text-secondary-900 dark:text-white mb-6">أسئلة سريعة قبل البدء</h2>
+            <p className="text-xl text-secondary-600 dark:text-secondary-300">إجابات واضحة لتقليل القلق والتردد.</p>
           </div>
 
           <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -441,10 +371,7 @@ export function Home() {
           </div>
 
           <div className="text-center mt-12">
-            <Link
-              to="/offer"
-              onClick={() => pushDL('nav_click', { target: '/offer', source: 'home_faq' })}
-            >
+            <Link to="/offer" onClick={() => pushDL('nav_click', { target: '/offer', source: 'home_faq' })}>
               <Button size="lg" variant="outline" icon={ArrowLeft}>
                 شوف عرض 7 أيام
               </Button>
@@ -453,13 +380,10 @@ export function Home() {
         </div>
       </section>
 
-      {/* FINAL CTA */}
       <section className="section-padding">
         <div className="container-custom">
           <Card className="p-12 md:p-16 text-center" glass>
-            <h2 className="text-3xl md:text-4xl font-bold text-secondary-900 dark:text-white mb-6">
-              جاهز نحدد النطاق ونبدأ؟
-            </h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-secondary-900 dark:text-white mb-6">جاهز نحدد النطاق ونبدأ؟</h2>
             <p className="text-xl text-secondary-600 dark:text-secondary-300 mb-8 max-w-2xl mx-auto">
               ابدأ بعرض 7 أيام أو افتح واتساب الآن — ونقفل المتطلبات بوضوح قبل التنفيذ.
             </p>
