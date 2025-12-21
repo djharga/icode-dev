@@ -1,12 +1,28 @@
-// src/pages/Consultation.tsx (FULL UPDATED — Funnel-only → WhatsApp + Supabase insert + GTM)
-// إصلاحات حقيقية:
-// 1) توحيد رقم واتساب (نفس رقم الفوتر)
-// 2) زر "تواصل فوراً" يفتح WhatsApp مع Prefill + dataLayer events
-// 3) منع إرسال بدون تاريخ (اختياري: تقدر تجعله required) + تقييد الوقت
-// 4) تنظيف أي أرقام سعودية placeholder
+// src/pages/Consultation.tsx
+// ENTERPRISE-GRADE — فكرة مختلفة: "جلسة تشخيص + Blueprint" بدل "استشارة عامة"
+// Funnel قوي: WhatsApp + Supabase + GTM + prefill ذكي + منع حجز عشوائي + تجربة واضحة
+//
+// الفكرة الجديدة:
+// 1) العميل لا “يحجز استشارة”.. العميل “يحجز تشخيص مشروع”
+// 2) مخرجات ملموسة: (Scope Snapshot + مخاطر + خطة 7 أيام + تقدير أولي + Next Steps)
+// 3) تحويل أعلى: زر واتساب دائم + زر “احجز التشخيص” + شريط ثقة + SLA رد
+//
+// ملاحظة DB:
+// جدول consultations يحتاج أعمدة (اختياري): goal, stage, budget, timeline, source, created_at
+// لو مش موجودة: امسحها من payload أو أضفها في Supabase.
 
 import { useMemo, useState, FormEvent } from 'react';
-import { CheckCircle, Calendar, Clock, ArrowLeft } from 'lucide-react';
+import {
+  CheckCircle,
+  Calendar,
+  Clock,
+  ArrowLeft,
+  ShieldCheck,
+  Sparkles,
+  FileText,
+  TrendingUp,
+  AlertTriangle,
+} from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { Input } from '../components/ui/Input';
 import { TextArea } from '../components/ui/TextArea';
@@ -26,7 +42,7 @@ function pushDL(event: string, payload: Record<string, unknown> = {}) {
 }
 
 export function Consultation() {
-  // ===== Funnel config (موحّد) =====
+  // ===== Funnel config =====
   const WHATSAPP_PHONE = '201507619503';
 
   const [formData, setFormData] = useState({
@@ -34,15 +50,25 @@ export function Consultation() {
     email: '',
     phone: '',
     project_type: 'موقع إلكتروني',
+
+    // Funnel fields (جديدة)
+    goal: '',
+    stage: '',
+    budget: '',
+    timeline: '',
     preferred_date: '',
     preferred_time: 'صباحاً (9-12)',
     project_description: '',
+
+    // Meta
+    source: 'consultation_page',
   });
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
 
+  // ===== Options =====
   const projectTypes = [
     { value: 'موقع إلكتروني', label: 'موقع إلكتروني' },
     { value: 'تطبيق ويب', label: 'تطبيق ويب' },
@@ -52,6 +78,43 @@ export function Consultation() {
     { value: 'أخرى', label: 'أخرى' },
   ];
 
+  const goals = [
+    { value: '', label: 'اختر الهدف الأساسي' },
+    { value: 'زيادة المبيعات', label: 'زيادة المبيعات' },
+    { value: 'جمع Leads', label: 'جمع Leads (عملاء محتملين)' },
+    { value: 'إطلاق براند', label: 'إطلاق براند وهوية' },
+    { value: 'نظام داخلي', label: 'نظام داخلي/بوابة موظفين' },
+    { value: 'تحسين أداء/SEO', label: 'تحسين أداء/SEO' },
+    { value: 'أمان وامتثال', label: 'أمان وامتثال' },
+  ];
+
+  const stages = [
+    { value: '', label: 'مرحلة المشروع' },
+    { value: 'فكرة', label: 'فكرة' },
+    { value: 'قيد التخطيط', label: 'قيد التخطيط' },
+    { value: 'عندي تصميم', label: 'عندي تصميم' },
+    { value: 'عندي نظام قائم', label: 'عندي نظام قائم وأحتاج تطوير' },
+    { value: 'عندي فريق وأحتاج توجيه', label: 'عندي فريق وأحتاج توجيه' },
+  ];
+
+  const budgets = [
+    { value: '', label: 'ميزانية تقريبية (اختياري)' },
+    { value: 'أقل من 5,000 جنيه', label: 'أقل من 5,000 جنيه' },
+    { value: '5,000 - 15,000 جنيه', label: '5,000 - 15,000 جنيه' },
+    { value: '15,000 - 30,000 جنيه', label: '15,000 - 30,000 جنيه' },
+    { value: '30,000 - 70,000 جنيه', label: '30,000 - 70,000 جنيه' },
+    { value: 'أكثر من 70,000 جنيه', label: 'أكثر من 70,000 جنيه' },
+  ];
+
+  const timelines = [
+    { value: '', label: 'موعد الإطلاق' },
+    { value: 'خلال أسبوع', label: 'خلال أسبوع' },
+    { value: 'خلال 2-3 أسابيع', label: 'خلال 2-3 أسابيع' },
+    { value: 'خلال شهر', label: 'خلال شهر' },
+    { value: 'خلال 2-3 شهور', label: 'خلال 2-3 شهور' },
+    { value: 'غير محدد', label: 'غير محدد' },
+  ];
+
   const timeSlots = [
     { value: 'صباحاً (9-12)', label: 'صباحاً (9-12)' },
     { value: 'ظهراً (12-3)', label: 'ظهراً (12-3)' },
@@ -59,46 +122,79 @@ export function Consultation() {
     { value: 'مساءً (6-9)', label: 'مساءً (6-9)' },
   ];
 
-  const WHATSAPP_PREFILL = useMemo(
-    () =>
-      encodeURIComponent(
-        [
-          'عايز أحجز استشارة مجانية.',
-          '',
-          `الاسم: ${formData.name || ''}`,
-          `الإيميل: ${formData.email || ''}`,
-          `الهاتف: ${formData.phone || ''}`,
-          `نوع المشروع: ${formData.project_type || ''}`,
-          `التاريخ المفضل: ${formData.preferred_date || ''}`,
-          `الوقت المفضل: ${formData.preferred_time || ''}`,
-          '',
-          'وصف المشروع:',
-          formData.project_description || '',
-        ].join('\n')
-      ),
-    [formData]
-  );
+  // ===== WhatsApp Prefill (ذكي — يكتب “مخرجات” الجلسة) =====
+  const WHATSAPP_PREFILL = useMemo(() => {
+    const lines = [
+      'عايز أحجز "جلسة تشخيص مشروع" مع icode.',
+      'عايز أطلع من الجلسة بـ: نطاق واضح + مخاطر + خطة 7 أيام + تقدير أولي.',
+      '',
+      `الاسم: ${formData.name || '-'}`,
+      `الإيميل: ${formData.email || '-'}`,
+      `الهاتف: ${formData.phone || '-'}`,
+      `نوع المشروع: ${formData.project_type || '-'}`,
+      `الهدف: ${formData.goal || '-'}`,
+      `مرحلة المشروع: ${formData.stage || '-'}`,
+      `الميزانية: ${formData.budget || '-'}`,
+      `موعد الإطلاق: ${formData.timeline || '-'}`,
+      `التاريخ المفضل: ${formData.preferred_date || '-'}`,
+      `الوقت المفضل: ${formData.preferred_time || '-'}`,
+      '',
+      'وصف مختصر:',
+      formData.project_description || '-',
+      '',
+      'مهم: لو عندي روابط/تصميم/مرجع هابعته بعد الرسالة.',
+    ];
+    return encodeURIComponent(lines.join('\n'));
+  }, [formData]);
 
   const WHATSAPP_LINK = useMemo(
     () => `https://wa.me/${WHATSAPP_PHONE}?text=${WHATSAPP_PREFILL}`,
     [WHATSAPP_PREFILL]
   );
 
+  // ===== Validation =====
+  const todayMin = useMemo(() => new Date().toISOString().split('T')[0], []);
+
+  const canSubmit = useMemo(() => {
+    if (!formData.name.trim()) return false;
+    if (!formData.email.trim()) return false;
+    if (!formData.project_type) return false;
+    if (!formData.project_description.trim()) return false;
+    // تاريخ اختياري: لو عايزه required خلي السطرين دول true required
+    // if (!formData.preferred_date) return false;
+    return true;
+  }, [formData]);
+
+  // ===== Submit =====
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (!canSubmit) return;
+
     setLoading(true);
     setError('');
     setSuccess(false);
 
-    try {
-      // Track submit attempt
-      pushDL('consultation_submit', { source: 'consultation_form' });
+    pushDL('consultation_submit', {
+      source: 'consultation_form',
+      project_type: formData.project_type,
+      goal: formData.goal,
+      stage: formData.stage,
+      timeline: formData.timeline,
+    });
 
-      const { error: submitError } = await supabase.from('consultations').insert([formData]);
+    try {
+      const payload = {
+        ...formData,
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim() || null,
+        created_at: new Date().toISOString(),
+      };
+
+      const { error: submitError } = await supabase.from('consultations').insert([payload]);
       if (submitError) throw submitError;
 
       setSuccess(true);
-
       pushDL('lead_success', {
         source: 'consultation_form',
         project_type: formData.project_type,
@@ -110,12 +206,17 @@ export function Consultation() {
         email: '',
         phone: '',
         project_type: 'موقع إلكتروني',
+        goal: '',
+        stage: '',
+        budget: '',
+        timeline: '',
         preferred_date: '',
         preferred_time: 'صباحاً (9-12)',
         project_description: '',
+        source: 'consultation_page',
       });
     } catch (err) {
-      setError('حدث خطأ أثناء حجز الاستشارة. يرجى المحاولة مرة أخرى.');
+      setError('حدث خطأ أثناء حجز الجلسة. جرّب تاني أو احجز مباشرة على واتساب.');
       pushDL('lead_error', { source: 'consultation_form' });
       // eslint-disable-next-line no-console
       console.error(err);
@@ -124,121 +225,234 @@ export function Consultation() {
     }
   };
 
-  const benefits = [
-    'فهم شامل لمتطلبات مشروعك',
-    'توصيات تقنية مخصصة',
-    'تقدير أولي للتكلفة والمدة',
-    'إجابة على جميع أسئلتك',
-    'خطة عمل واضحة',
-    'بدون أي التزام مالي',
+  // ===== Content Blocks =====
+  const outputs = [
+    { icon: FileText, title: 'Scope Snapshot', desc: 'نطاق مختصر (صفحات/Features) + حدود واضحة للاتفاق' },
+    { icon: AlertTriangle, title: 'Risk Map', desc: 'أكبر 3 مخاطر في التنفيذ + حلول عملية لتجنبها' },
+    { icon: TrendingUp, title: 'خطة 7 أيام', desc: 'خطة تنفيذ أول أسبوع (Milestones + تسليمات قابلة للقياس)' },
+    { icon: ShieldCheck, title: 'Baseline للأمان', desc: 'نقاط أمان أساسية + ما يجب عمله قبل الإطلاق' },
   ];
 
   const whoShouldBook = [
-    { title: 'أصحاب الأفكار', description: 'لديك فكرة مشروع وتريد معرفة كيفية تنفيذها' },
-    { title: 'الشركات الناشئة', description: 'تبحث عن شريك تقني موثوق لبناء منتجك' },
-    { title: 'الشركات القائمة', description: 'تريد تطوير أو تحديث أنظمتك الحالية' },
-    { title: 'المديرون التقنيون', description: 'تحتاج إلى استشارة في القرارات التقنية' },
+    { title: 'عايز تبدأ صح', description: 'مش عايز تضيع وقت في “كلام عام”، عايز خطة واضحة' },
+    { title: 'عايز تسعير عادل', description: 'عايز تعرف السعر بناءً على Scope مش تخمين' },
+    { title: 'عايز Funnel يجيب عميل', description: 'مش عايز موقع شكله حلو وبس.. عايزه يبيع' },
+    { title: 'عندك نظام قائم', description: 'عايز تشخيص سريع: إيه يتصلّح وإيه يتبني من جديد' },
   ];
 
-  const preparation = [
-    'حدد أهداف مشروعك بوضوح',
-    'اجمع أي مستندات أو مراجع ذات صلة',
-    'حدد ميزانيتك المتوقعة',
-    'فكر في الجدول الزمني المطلوب',
-    'جهز أسئلتك واستفساراتك',
+  const prep = [
+    'اكتب هدف واحد واضح: “مبيعات” أو “Leads” أو “نظام داخلي”',
+    'لو عندك مرجع/منافس/تصميم — جهّز الرابط',
+    'حدد موعد الإطلاق حتى لو تقريبي',
+    'قول الميزانية بصراحة (عشان الحل يكون واقعي)',
   ];
-
-  const todayMin = useMemo(() => new Date().toISOString().split('T')[0], []);
 
   return (
-    <div className="min-h-screen pt-20">
-      <section className="section-padding gradient-primary text-white">
-        <div className="container-custom">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">احجز استشارة مجانية</h1>
+    <div className="min-h-screen pt-20 overflow-x-hidden">
+      {/* HERO — فكرة جديدة */}
+      <section className="section-padding gradient-primary text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-noise opacity-60" />
+        <div className="container-custom relative">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="inline-flex items-center gap-2 bg-white/10 border border-white/15 rounded-full px-4 py-2 mb-6">
+              <Sparkles className="w-4 h-4" />
+              <span className="text-sm font-semibold">جلسة تشخيص مشروع — مش استشارة عامة</span>
+            </div>
+
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+              احجز جلسة تشخيص مشروع مجانية
+            </h1>
             <p className="text-xl md:text-2xl leading-relaxed text-white/90">
-              جلسة مجانية لمناقشة مشروعك والحصول على توصيات تقنية واضحة وخطة تنفيذ.
+              هدف الجلسة: تخرج بخلاصة تنفيذ حقيقية — نطاق واضح + مخاطر + خطة 7 أيام + تقدير أولي.
+            </p>
+
+            <div className="mt-8 max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="flex items-center justify-center gap-2 bg-white/10 border border-white/15 rounded-2xl py-4">
+                <Clock className="w-5 h-5" />
+                <span className="font-semibold">45–60 دقيقة</span>
+              </div>
+              <div className="flex items-center justify-center gap-2 bg-white/10 border border-white/15 rounded-2xl py-4">
+                <ShieldCheck className="w-5 h-5" />
+                <span className="font-semibold">Scope + ضمان وضوح</span>
+              </div>
+              <div className="flex items-center justify-center gap-2 bg-white/10 border border-white/15 rounded-2xl py-4">
+                <CheckCircle className="w-5 h-5" />
+                <span className="font-semibold">خطة قابلة للتنفيذ</span>
+              </div>
+            </div>
+
+            {/* Funnel CTA */}
+            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+              <a
+                href={WHATSAPP_LINK}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => pushDL('lead_click', { source: 'consultation_hero', channel: 'whatsapp' })}
+              >
+                <Button size="lg" variant="secondary" icon={ArrowLeft}>
+                  تواصل فوراً على واتساب
+                </Button>
+              </a>
+
+              <a
+                href="#book"
+                onClick={() => pushDL('nav_click', { source: 'consultation_hero', target: '#book' })}
+              >
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-white/70 text-white bg-white/10 hover:bg-white/20 hover:text-white hover:border-white/90"
+                >
+                  احجز من هنا
+                </Button>
+              </a>
+            </div>
+
+            <p className="text-sm mt-5 text-white/80">
+              رد خلال 24 ساعة عمل. لو مستعجل: واتساب أسرع.
             </p>
           </div>
         </div>
       </section>
 
+      {/* OUTPUTS — ملموسة */}
       <section className="section-padding">
         <div className="container-custom">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* LEFT */}
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-secondary-900 dark:text-white mb-4">
+                مخرجات الجلسة (دي اللي بتخليها “مختلفة”)
+              </h2>
+              <p className="text-lg text-secondary-600 dark:text-secondary-300">
+                مش وعود. دي ملفات/نقاط واضحة هتستلمها كتوجيه.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {outputs.map((x) => (
+                <Card key={x.title} className="p-6" hover>
+                  <div className="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center mb-4">
+                    <x.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold text-secondary-900 dark:text-white mb-2">{x.title}</h3>
+                  <p className="text-sm text-secondary-600 dark:text-secondary-300 leading-relaxed">{x.desc}</p>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* WHO */}
+      <section className="section-padding bg-secondary-50 dark:bg-secondary-900">
+        <div className="container-custom">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-secondary-900 dark:text-white mb-4">
+                لمن الجلسة؟
+              </h2>
+              <p className="text-lg text-secondary-600 dark:text-secondary-300">
+                لو أنت واحد من دول… الجلسة هتوفر عليك فلوس ووقت.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {whoShouldBook.map((x) => (
+                <Card key={x.title} className="p-6" hover>
+                  <h3 className="text-lg font-bold text-secondary-900 dark:text-white mb-2">{x.title}</h3>
+                  <p className="text-sm text-secondary-600 dark:text-secondary-300 leading-relaxed">{x.description}</p>
+                </Card>
+              ))}
+            </div>
+
+            <div className="text-center mt-10">
+              <a
+                href={WHATSAPP_LINK}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => pushDL('lead_click', { source: 'consultation_who', channel: 'whatsapp' })}
+              >
+                <Button size="lg" icon={ArrowLeft}>
+                  اختصر الطريق — واتساب
+                </Button>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* BOOK */}
+      <section className="section-padding">
+        <div className="container-custom">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+            {/* LEFT — Prep */}
             <div>
               <h2 className="text-3xl font-bold text-secondary-900 dark:text-white mb-6">
-                ما ستحصل عليه من الجلسة
+                قبل ما تحجز (عشان الجلسة تطلع مفيدة)
               </h2>
 
               <Card className="p-8 mb-8" gradient>
                 <ul className="space-y-4">
-                  {benefits.map((benefit, index) => (
-                    <li key={index} className="flex items-start gap-3">
+                  {prep.map((item, idx) => (
+                    <li key={idx} className="flex items-start gap-3">
                       <CheckCircle className="w-6 h-6 text-success-500 flex-shrink-0 mt-0.5" />
-                      <span className="text-lg text-secondary-700 dark:text-secondary-300">{benefit}</span>
+                      <span className="text-lg text-secondary-700 dark:text-secondary-300">{item}</span>
                     </li>
                   ))}
                 </ul>
               </Card>
 
-              <h3 className="text-2xl font-bold text-secondary-900 dark:text-white mb-6">لمن هذه الاستشارة؟</h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                {whoShouldBook.map((item, index) => (
-                  <Card key={index} className="p-6" hover>
-                    <h4 className="text-lg font-bold text-secondary-900 dark:text-white mb-2">{item.title}</h4>
-                    <p className="text-secondary-600 dark:text-secondary-300 text-sm">{item.description}</p>
-                  </Card>
-                ))}
-              </div>
-
-              <Card className="p-6" glass>
-                <div className="flex items-center gap-3 mb-4">
-                  <Calendar className="w-6 h-6 text-primary-600" />
-                  <h4 className="text-lg font-bold text-secondary-900 dark:text-white">مدة الجلسة</h4>
+              <Card className="p-6 glass">
+                <div className="flex items-center gap-3 mb-3">
+                  <ShieldCheck className="w-6 h-6 text-primary-600" />
+                  <h4 className="text-lg font-bold text-secondary-900 dark:text-white">مبدأ واضح</h4>
                 </div>
-                <p className="text-secondary-600 dark:text-secondary-300">45-60 دقيقة عبر مكالمة فيديو أو هاتفية</p>
+                <p className="text-secondary-600 dark:text-secondary-300 leading-relaxed">
+                  الجلسة هدفها “قرار” و“خطة” مش دردشة. عشان كده هنركز على Scope ونتيجة قابلة للقياس.
+                </p>
               </Card>
             </div>
 
-            {/* RIGHT */}
-            <div>
-              <h2 className="text-3xl font-bold text-secondary-900 dark:text-white mb-6">احجز موعدك الآن</h2>
+            {/* RIGHT — Form */}
+            <div id="book" className="scroll-mt-28">
+              <h2 className="text-3xl font-bold text-secondary-900 dark:text-white mb-6">
+                احجز تشخيصك الآن
+              </h2>
 
               {success && (
-                <div className="mb-6 p-4 bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800 rounded-lg">
+                <div className="mb-6 p-4 bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800 rounded-xl">
                   <p className="text-success-700 dark:text-success-400 font-semibold">
-                    تم حجز استشارتك بنجاح! سنتواصل معك لتأكيد الموعد.
+                    تم استلام طلبك. هنكلمك لتأكيد الموعد وتحديد قناة الجلسة.
                   </p>
                 </div>
               )}
 
               {error && (
-                <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
                   <p className="text-red-700 dark:text-red-400 font-semibold">{error}</p>
                 </div>
               )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                <Input
-                  label="الاسم الكامل"
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="أدخل اسمك الكامل"
-                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Input
+                    label="الاسم الكامل"
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="اكتب اسمك"
+                  />
 
-                <Input
-                  label="البريد الإلكتروني"
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  placeholder="example@email.com"
-                />
+                  <Input
+                    label="البريد الإلكتروني"
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="example@email.com"
+                  />
+                </div>
 
                 <Input
                   label="رقم الهاتف (اختياري)"
@@ -256,97 +470,112 @@ export function Consultation() {
                   options={projectTypes}
                 />
 
-                <Input
-                  label="التاريخ المفضل (اختياري)"
-                  type="date"
-                  value={formData.preferred_date}
-                  onChange={(e) => setFormData({ ...formData, preferred_date: e.target.value })}
-                  min={todayMin}
-                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Select
+                    label="الهدف الأساسي"
+                    value={formData.goal}
+                    onChange={(e) => setFormData({ ...formData, goal: e.target.value })}
+                    options={goals}
+                  />
 
-                <Select
-                  label="الوقت المفضل"
-                  value={formData.preferred_time}
-                  onChange={(e) => setFormData({ ...formData, preferred_time: e.target.value })}
-                  options={timeSlots}
-                />
+                  <Select
+                    label="مرحلة المشروع"
+                    value={formData.stage}
+                    onChange={(e) => setFormData({ ...formData, stage: e.target.value })}
+                    options={stages}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Select
+                    label="ميزانية تقريبية (اختياري)"
+                    value={formData.budget}
+                    onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
+                    options={budgets}
+                  />
+
+                  <Select
+                    label="موعد الإطلاق"
+                    value={formData.timeline}
+                    onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
+                    options={timelines}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Input
+                    label="التاريخ المفضل (اختياري)"
+                    type="date"
+                    value={formData.preferred_date}
+                    onChange={(e) => setFormData({ ...formData, preferred_date: e.target.value })}
+                    min={todayMin}
+                  />
+
+                  <Select
+                    label="الوقت المفضل"
+                    value={formData.preferred_time}
+                    onChange={(e) => setFormData({ ...formData, preferred_time: e.target.value })}
+                    options={timeSlots}
+                  />
+                </div>
 
                 <TextArea
-                  label="وصف مختصر للمشروع"
+                  label="وصف مختصر للمشروع (إجباري)"
                   required
                   value={formData.project_description}
                   onChange={(e) => setFormData({ ...formData, project_description: e.target.value })}
-                  placeholder="اكتب الهدف + الصفحات + أي مراجع..."
-                  rows={5}
+                  placeholder="اكتب: الهدف + الصفحات/Features + أي مرجع + أهم شرط عندك..."
+                  rows={6}
+                  hint="أحسن وصف: 5 سطور. كل سطر معلومة. بدون حشو."
                 />
 
-                <Button type="submit" size="lg" className="w-full" disabled={loading} icon={ArrowLeft}>
-                  {loading ? 'جاري الحجز...' : 'احجز الآن'}
+                <Button type="submit" size="lg" className="w-full" disabled={loading || !canSubmit} icon={ArrowLeft}>
+                  {loading ? 'جاري الإرسال...' : 'احجز جلسة التشخيص'}
                 </Button>
               </form>
 
-              {/* Optional WhatsApp fallback */}
+              {/* WhatsApp fallback */}
               <div className="mt-6">
                 <a
                   href={WHATSAPP_LINK}
                   target="_blank"
                   rel="noreferrer"
-                  onClick={() => pushDL('lead_click', { source: 'consultation_form_whatsapp_fallback' })}
+                  onClick={() => pushDL('lead_click', { source: 'consultation_form_whatsapp', channel: 'whatsapp' })}
                 >
                   <Button className="w-full" variant="outline" icon={ArrowLeft}>
-                    أو احجز عبر واتساب مباشرة
+                    أو احجز مباشرة على واتساب (قالب جاهز)
                   </Button>
                 </a>
+              </div>
+
+              {/* Trust note */}
+              <div className="mt-6 text-sm text-secondary-500 dark:text-secondary-400">
+                بالإرسال: أنت توافق على التواصل معك بخصوص الطلب فقط. لا رسائل تسويقية عشوائية.
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="section-padding bg-secondary-50 dark:bg-secondary-900">
+      {/* Final Funnel */}
+      <section className="section-padding gradient-primary text-white">
         <div className="container-custom">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-secondary-900 dark:text-white mb-4">كيف تستعد للجلسة</h2>
-              <p className="text-lg text-secondary-600 dark:text-secondary-300">لأقصى استفادة من الاستشارة</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {preparation.map((item, index) => (
-                <Card key={index} className="p-6" hover>
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center flex-shrink-0 text-white font-bold">
-                      {index + 1}
-                    </div>
-                    <p className="text-secondary-700 dark:text-secondary-300 flex-1">{item}</p>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Funnel-only immediate WhatsApp */}
-      <section className="section-padding">
-        <div className="container-custom">
-          <Card className="p-12 text-center" glass>
-            <Clock className="w-16 h-16 text-primary-600 mx-auto mb-6" />
-            <h2 className="text-3xl font-bold text-secondary-900 dark:text-white mb-4">هل تحتاج للتواصل فوراً؟</h2>
-            <p className="text-lg text-secondary-600 dark:text-secondary-300 mb-6">
-              للاستفسارات العاجلة، افتح واتساب وأرسل التفاصيل مباشرة.
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">لو مستعجل… اختصرها</h2>
+            <p className="text-xl mb-8 text-white/90">
+              افتح واتساب وابعت التفاصيل. هنحولها لنطاق واضح وخطة تنفيذ.
             </p>
             <a
               href={WHATSAPP_LINK}
               target="_blank"
               rel="noreferrer"
-              onClick={() => pushDL('lead_click', { source: 'consultation_footer_whatsapp' })}
+              onClick={() => pushDL('lead_click', { source: 'consultation_footer', channel: 'whatsapp' })}
             >
               <Button size="lg" variant="secondary" icon={ArrowLeft}>
-                تواصل عبر واتساب
+                تواصل فوراً على واتساب
               </Button>
             </a>
-          </Card>
+          </div>
         </div>
       </section>
     </div>
