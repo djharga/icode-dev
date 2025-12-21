@@ -7,7 +7,7 @@ export function Portal() {
       <section className="section-padding gradient-primary text-white">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center">
-            <Lock cئlassName="w-16 h-16 mx-auto mb-6" />
+            <Lock className="w-16 h-16 mx-auto mb-6" />
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
               لوحة العميل
             </h1>
