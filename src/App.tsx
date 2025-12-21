@@ -1,4 +1,4 @@
-// src/App.tsx (FULL UPDATED — no dead code, clean globals)
+// src/App.tsx (FULL UPDATED — fixes horizontal overflow globally + keeps your routing/SEO)
 
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -40,13 +40,11 @@ function App() {
   return (
     <ThemeProvider>
       <BrowserRouter>
-        {/* SEO المركزي */}
         <SEO />
 
         <ScrollToTop />
         <ProgressBar />
 
-        {/* GLOBAL CTAs */}
         <BackToTop />
         <FloatingWhatsApp
           phone="201507619503"
@@ -61,10 +59,12 @@ function App() {
           position="left"
         />
 
-        <div className="min-h-screen flex flex-col">
+        {/* ✅ الحل: قص أي overflow أفقي من جذر التطبيق */}
+        <div className="min-h-screen flex flex-col overflow-x-hidden">
           <Header />
 
-          <main className="flex-1">
+          {/* ✅ قص overflow في main كمان (لو عنصر جوّه بيكسر العرض) */}
+          <main className="flex-1 overflow-x-hidden">
             <PageTransition>
               <Routes>
                 <Route path="/" element={<Home />} />
@@ -75,13 +75,10 @@ function App() {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/consultation" element={<Consultation />} />
                 <Route path="/terms" element={<Terms />} />
-
                 <Route path="/offers" element={<Offers />} />
                 <Route path="/offer" element={<Offer />} />
-
                 <Route path="/portal" element={<Portal />} />
 
-                {/* 404 */}
                 <Route
                   path="*"
                   element={
