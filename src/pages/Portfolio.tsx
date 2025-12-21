@@ -1,6 +1,4 @@
-// src/pages/Portfolio.tsx  (FULL UPDATED — "Global-grade" Portfolio)
-// تحسينات حقيقية: Filters كـ pills + sticky + cards بمقاس ثابت + metrics chips + CTA واضح
-// بدون تفرعات، جاهز Copy-Paste
+// src/pages/Portfolio.tsx (FULL FIXED — WhatsApp unified + stable data + clean memo)
 
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -23,109 +21,124 @@ type Project = {
   description: string;
   techStack: string[];
   clientValue: string;
-  // اختياري: لو عندك لينكات حقيقية املأها
   href?: string;
-  // رقم/نتيجة “قابلة للعرض” بدل ادعاءات مبالغ فيها
   metric?: { label: string; value: string; icon?: 'zap' | 'shield' | 'growth' };
 };
 
-const pushDL = (event: string, payload: Record<string, unknown> = {}) => {
-  // GTM safe
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const w = window as any;
-  if (!w.dataLayer) w.dataLayer = [];
-  w.dataLayer.push({ event, ...payload });
-};
+declare global {
+  interface Window {
+    dataLayer?: unknown[];
+  }
+}
+
+function pushDL(event: string, payload: Record<string, unknown> = {}) {
+  if (!window.dataLayer) window.dataLayer = [];
+  window.dataLayer.push({ event, ...payload });
+}
+
+const CATEGORIES = ['الكل', 'Fintech', 'SaaS', 'E-commerce', 'أمان', 'أنظمة مخصصة', 'موبايل'] as const;
+
+const PROJECTS: Project[] = [
+  {
+    title: 'منصة PayFlow',
+    category: 'Fintech',
+    description: 'منصة مدفوعات ومحافظ رقمية مع طبقة تحقق وهوية (KYC) وضوابط امتثال.',
+    techStack: ['React', 'Node.js', 'PostgreSQL', 'Redis', 'AWS'],
+    clientValue: 'تقليل وقت تنفيذ العمليات + لوحات تقارير لحظية.',
+    metric: { label: 'زمن استجابة', value: '< 250ms', icon: 'zap' },
+  },
+  {
+    title: 'نظام ProjectHub',
+    category: 'SaaS',
+    description: 'إدارة مشاريع وفرق: مهام، صلاحيات، تقارير، وتتبع وقت/تكلفة.',
+    techStack: ['Next.js', 'Supabase', 'TypeScript', 'Tailwind CSS'],
+    clientValue: 'وضوح تنفيذ أعلى عبر تقارير أسبوعية ولوحات متابعة.',
+    metric: { label: 'تحسين الإنتاجية', value: '+45%', icon: 'growth' },
+  },
+  {
+    title: 'متجر LuxeStyle',
+    category: 'E-commerce',
+    description: 'متجر أزياء مع تجربة بحث/تصفح سريعة، سلة ودفع، وإدارة منتجات.',
+    techStack: ['React', 'Express', 'MongoDB', 'Stripe', 'Cloudinary'],
+    clientValue: 'رفع معدل التحويل عبر تحسين مسار الشراء والسرعة.',
+    metric: { label: 'معدل التحويل', value: '+2.1x', icon: 'growth' },
+  },
+  {
+    title: 'نظام SecureVault',
+    category: 'أمان',
+    description: 'إدارة أسرار وصلاحيات مع تشفير، سجلات تدقيق، و2FA.',
+    techStack: ['Rust', 'PostgreSQL', 'React', 'WebAssembly'],
+    clientValue: 'تقليل المخاطر عبر سياسات وصول واضحة وتسجيل كامل.',
+    metric: { label: 'تقليل المخاطر', value: 'High', icon: 'shield' },
+  },
+  {
+    title: 'تطبيق HealthTrack',
+    category: 'موبايل',
+    description: 'تطبيق تتبع صحة/لياقة مع خطط وتذكيرات وتجربة استخدام سلسة.',
+    techStack: ['React Native', 'Firebase', 'TensorFlow', 'Node.js'],
+    clientValue: 'واجهة بسيطة مع أداء ثابت وتجربة يومية سهلة.',
+    metric: { label: 'تقييم المستخدمين', value: '4.8★', icon: 'growth' },
+  },
+  {
+    title: 'نظام ERP للمصانع',
+    category: 'أنظمة مخصصة',
+    description: 'ERP لإدارة الإنتاج والمخزون والمبيعات والموارد البشرية.',
+    techStack: ['Vue.js', 'Django', 'PostgreSQL', 'Docker', 'Kubernetes'],
+    clientValue: 'توحيد العمليات وتقليل الأخطاء والتكرار في البيانات.',
+    metric: { label: 'خفض التكاليف', value: '-35%', icon: 'growth' },
+  },
+  {
+    title: 'منصة LearnPro',
+    category: 'SaaS',
+    description: 'منصة تعليمية: محتوى، متابعة تقدم، فصول افتراضية (اختياري).',
+    techStack: ['React', 'WebRTC', 'Node.js', 'MongoDB', 'AWS'],
+    clientValue: 'تقارير تقدم + إدارة محتوى منظمة للمدرسين.',
+    metric: { label: 'نشاط الطلاب', value: '+60%', icon: 'growth' },
+  },
+  {
+    title: 'نظام SmartInventory',
+    category: 'أنظمة مخصصة',
+    description: 'مخزون ذكي: تنبيهات + توقّع احتياج + صلاحيات فرق.',
+    techStack: ['Angular', 'Python', 'MySQL', 'TensorFlow', 'Docker'],
+    clientValue: 'دقة مخزون أعلى وتقليل فاقد وتوريد أفضل.',
+    metric: { label: 'دقة المخزون', value: '99%', icon: 'zap' },
+  },
+];
 
 export function Portfolio() {
-  const categories = ['الكل', 'Fintech', 'SaaS', 'E-commerce', 'أمان', 'أنظمة مخصصة', 'موبايل'];
+  const WHATSAPP_PHONE = '201507619503';
+  const WHATSAPP_PREFILL = encodeURIComponent(
+    [
+      'عايز استفسر عن مشروع مشابه.',
+      '',
+      'نوع المشروع:',
+      'الهدف:',
+      'الميزانية:',
+      'موعد الإطلاق:',
+      'تفاصيل مختصرة:',
+    ].join('\n')
+  );
+  const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_PHONE}?text=${WHATSAPP_PREFILL}`;
 
-  const [selectedCategory, setSelectedCategory] = useState('الكل');
+  const [selectedCategory, setSelectedCategory] = useState<(typeof CATEGORIES)[number]>('الكل');
   const [query, setQuery] = useState('');
 
-  const projects: Project[] = [
-    {
-      title: 'منصة PayFlow',
-      category: 'Fintech',
-      description: 'منصة مدفوعات ومحافظ رقمية مع طبقة تحقق وهوية (KYC) وضوابط امتثال.',
-      techStack: ['React', 'Node.js', 'PostgreSQL', 'Redis', 'AWS'],
-      clientValue: 'تقليل وقت تنفيذ العمليات + لوحات تقارير لحظية.',
-      metric: { label: 'زمن استجابة', value: '< 250ms', icon: 'zap' },
-    },
-    {
-      title: 'نظام ProjectHub',
-      category: 'SaaS',
-      description: 'إدارة مشاريع وفرق: مهام، صلاحيات، تقارير، وتتبع وقت/تكلفة.',
-      techStack: ['Next.js', 'Supabase', 'TypeScript', 'Tailwind CSS'],
-      clientValue: 'وضوح تنفيذ أعلى عبر تقارير أسبوعية ولوحات متابعة.',
-      metric: { label: 'تحسين الإنتاجية', value: '+45%', icon: 'growth' },
-    },
-    {
-      title: 'متجر LuxeStyle',
-      category: 'E-commerce',
-      description: 'متجر أزياء مع تجربة بحث/تصفح سريعة، سلة ودفع، وإدارة منتجات.',
-      techStack: ['React', 'Express', 'MongoDB', 'Stripe', 'Cloudinary'],
-      clientValue: 'رفع معدل التحويل عبر تحسين مسار الشراء والسرعة.',
-      metric: { label: 'معدل التحويل', value: '+2.1x', icon: 'growth' },
-    },
-    {
-      title: 'نظام SecureVault',
-      category: 'أمان',
-      description: 'إدارة أسرار وصلاحيات مع تشفير، سجلات تدقيق، و2FA.',
-      techStack: ['Rust', 'PostgreSQL', 'React', 'WebAssembly'],
-      clientValue: 'تقليل المخاطر عبر سياسات وصول واضحة وتسجيل كامل.',
-      metric: { label: 'تقليل المخاطر', value: 'High', icon: 'shield' },
-    },
-    {
-      title: 'تطبيق HealthTrack',
-      category: 'موبايل',
-      description: 'تطبيق تتبع صحة/لياقة مع خطط وتذكيرات وتجربة استخدام سلسة.',
-      techStack: ['React Native', 'Firebase', 'TensorFlow', 'Node.js'],
-      clientValue: 'واجهة بسيطة مع أداء ثابت وتجربة يومية سهلة.',
-      metric: { label: 'تقييم المستخدمين', value: '4.8★', icon: 'growth' },
-    },
-    {
-      title: 'نظام ERP للمصانع',
-      category: 'أنظمة مخصصة',
-      description: 'ERP لإدارة الإنتاج والمخزون والمبيعات والموارد البشرية.',
-      techStack: ['Vue.js', 'Django', 'PostgreSQL', 'Docker', 'Kubernetes'],
-      clientValue: 'توحيد العمليات وتقليل الأخطاء والتكرار في البيانات.',
-      metric: { label: 'خفض التكاليف', value: '-35%', icon: 'growth' },
-    },
-    {
-      title: 'منصة LearnPro',
-      category: 'SaaS',
-      description: 'منصة تعليمية: محتوى، متابعة تقدم، فصول افتراضية (اختياري).',
-      techStack: ['React', 'WebRTC', 'Node.js', 'MongoDB', 'AWS'],
-      clientValue: 'تقارير تقدم + إدارة محتوى منظمة للمدرسين.',
-      metric: { label: 'نشاط الطلاب', value: '+60%', icon: 'growth' },
-    },
-    {
-      title: 'نظام SmartInventory',
-      category: 'أنظمة مخصصة',
-      description: 'مخزون ذكي: تنبيهات + توقّع احتياج + صلاحيات فرق.',
-      techStack: ['Angular', 'Python', 'MySQL', 'TensorFlow', 'Docker'],
-      clientValue: 'دقة مخزون أعلى وتقليل فاقد وتوريد أفضل.',
-      metric: { label: 'دقة المخزون', value: '99%', icon: 'zap' },
-    },
-  ];
-
   const filteredProjects = useMemo(() => {
-    const base = selectedCategory === 'الكل' ? projects : projects.filter((p) => p.category === selectedCategory);
-    if (!query.trim()) return base;
+    const base =
+      selectedCategory === 'الكل'
+        ? PROJECTS
+        : PROJECTS.filter((p) => p.category === selectedCategory);
 
     const q = query.trim().toLowerCase();
+    if (!q) return base;
+
     return base.filter((p) => {
-      const hay = [
-        p.title,
-        p.category,
-        p.description,
-        p.clientValue,
-        ...p.techStack,
-      ].join(' ').toLowerCase();
+      const hay = [p.title, p.category, p.description, p.clientValue, ...p.techStack]
+        .join(' ')
+        .toLowerCase();
       return hay.includes(q);
     });
-  }, [projects, query, selectedCategory]);
+  }, [query, selectedCategory]);
 
   const metricIcon = (m?: Project['metric']) => {
     if (!m?.icon) return Sparkles;
@@ -135,7 +148,7 @@ export function Portfolio() {
   };
 
   return (
-    <div className="min-h-screen pt-20">
+    <div className="min-h-screen pt-20 overflow-x-hidden">
       {/* HERO */}
       <section className="section-padding gradient-primary text-white">
         <div className="container-custom">
@@ -156,19 +169,18 @@ export function Portfolio() {
               </Link>
 
               <a
-                href="https://wa.me/201234567890"
+                href={WHATSAPP_LINK}
                 target="_blank"
                 rel="noreferrer"
                 onClick={() => pushDL('lead_click', { source: 'portfolio_hero_whatsapp' })}
               >
-<Button
-  size="lg"
-  variant="outline"
-  className="border-white/70 text-white bg-white/10 hover:bg-white/20 hover:text-white hover:border-white/90"
->
-  تواصل سريع
-</Button>
-
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-white/70 text-white bg-white/10 hover:bg-white/20 hover:text-white hover:border-white/90"
+                >
+                  تواصل سريع
+                </Button>
               </a>
             </div>
           </div>
@@ -199,7 +211,7 @@ export function Portfolio() {
                     <span>تصنيف:</span>
                   </div>
 
-                  {categories.map((category) => {
+                  {CATEGORIES.map((category) => {
                     const active = selectedCategory === category;
                     return (
                       <button
@@ -210,7 +222,7 @@ export function Portfolio() {
                           pushDL('portfolio_filter', { category });
                         }}
                         className={[
-                          'px-4 py-2 rounded-full text-sm font-semibold border transition',
+                          'px-4 py-2 rounded-full text-sm font-semibold border transition-colors',
                           active
                             ? 'bg-primary-600 text-white border-primary-600'
                             : 'bg-transparent text-secondary-700 dark:text-secondary-200 border-secondary-200 dark:border-secondary-700 hover:bg-secondary-50 dark:hover:bg-secondary-800',
@@ -224,7 +236,10 @@ export function Portfolio() {
 
                 {/* Results count */}
                 <div className="text-center text-sm text-secondary-500 dark:text-secondary-400">
-                  النتائج: <span className="font-bold text-secondary-900 dark:text-white">{filteredProjects.length}</span>
+                  النتائج:{' '}
+                  <span className="font-bold text-secondary-900 dark:text-white">
+                    {filteredProjects.length}
+                  </span>
                 </div>
               </div>
             </Card>
@@ -316,7 +331,13 @@ export function Portfolio() {
                     <div className="mt-7 flex flex-col sm:flex-row gap-3">
                       <Link
                         to="/offer"
-                        onClick={() => pushDL('nav_click', { target: '/offer', source: 'portfolio_card', project: project.title })}
+                        onClick={() =>
+                          pushDL('nav_click', {
+                            target: '/offer',
+                            source: 'portfolio_card',
+                            project: project.title,
+                          })
+                        }
                         className="flex-1"
                       >
                         <Button className="w-full" icon={ArrowLeft}>
@@ -325,10 +346,15 @@ export function Portfolio() {
                       </Link>
 
                       <a
-                        href="https://wa.me/201234567890"
+                        href={WHATSAPP_LINK}
                         target="_blank"
                         rel="noreferrer"
-                        onClick={() => pushDL('lead_click', { source: 'portfolio_card_whatsapp', project: project.title })}
+                        onClick={() =>
+                          pushDL('lead_click', {
+                            source: 'portfolio_card_whatsapp',
+                            project: project.title,
+                          })
+                        }
                         className="flex-1"
                       >
                         <Button className="w-full" variant="outline">
@@ -366,7 +392,7 @@ export function Portfolio() {
         </div>
       </section>
 
-      {/* FINAL PROOF + CTA */}
+      {/* FINAL CTA */}
       <section className="section-padding bg-secondary-50 dark:bg-secondary-900">
         <div className="container-custom">
           <Card className="p-12 md:p-16 text-center glass">
@@ -380,7 +406,9 @@ export function Portfolio() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 to="/offer"
-                onClick={() => pushDL('nav_click', { target: '/offer', source: 'portfolio_footer' })}
+                onClick={() =>
+                  pushDL('nav_click', { target: '/offer', source: 'portfolio_footer' })
+                }
               >
                 <Button size="lg" icon={ArrowLeft}>
                   افتح عرض 7 أيام
@@ -388,7 +416,7 @@ export function Portfolio() {
               </Link>
 
               <a
-                href="https://wa.me/201234567890"
+                href={WHATSAPP_LINK}
                 target="_blank"
                 rel="noreferrer"
                 onClick={() => pushDL('lead_click', { source: 'portfolio_footer_whatsapp' })}
