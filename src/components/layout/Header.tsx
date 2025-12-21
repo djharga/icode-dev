@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Moon, Sun, Code2, PhoneCall, ArrowLeft } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
+import { Button } from '../ui/Button';
 
 declare global {
   interface Window {
@@ -42,7 +43,6 @@ export function Header() {
     []
   );
 
-  // Scroll state
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 16);
     handleScroll();
@@ -50,22 +50,18 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll as any);
   }, []);
 
-  // Close menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
-  // Lock body scroll when mobile menu open
   useEffect(() => {
     const prev = document.body.style.overflow;
-    if (mobileMenuOpen) document.body.style.overflow = 'hidden';
-    else document.body.style.overflow = prev || '';
+    document.body.style.overflow = mobileMenuOpen ? 'hidden' : prev || '';
     return () => {
       document.body.style.overflow = prev || '';
     };
   }, [mobileMenuOpen]);
 
-  // Close on ESC
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setMobileMenuOpen(false);
@@ -74,7 +70,6 @@ export function Header() {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [mobileMenuOpen]);
 
-  // Conversion-first nav: قليل + واضح
   const navigation = useMemo(
     () => [
       { name: 'الرئيسية', href: '/' },
@@ -89,223 +84,161 @@ export function Header() {
     path === '/' ? location.pathname === '/' : location.pathname.startsWith(path);
 
   return (
-    <>
-      <header
-        className={[
-          'fixed top-0 right-0 left-0 z-50',
-          'transition-all duration-300',
-          scrolled
-            ? 'glass-strong border-b border-white/10 shadow-soft'
-            : 'glass border-b border-white/5',
-        ].join(' ')}
-      >
-        <nav className="container-custom" aria-label="التنقل الرئيسي">
-          <div className="flex items-center justify-between h-20">
-            {/* Brand */}
-            <Link to="/" className="flex items-center gap-2 group" aria-label="الذهاب للرئيسية">
-              <div className="w-10 h-10 gradient-primary rounded-lg flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                <Code2 className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-2xl font-bold text-gradient transition-all duration-300">
-                icode
-              </span>
-            </Link>
-
-            {/* Desktop nav */}
-            <div className="hidden lg:flex items-center gap-8">
-              {navigation.map((item) => {
-                const active = isActive(item.href);
-                return (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    aria-current={active ? 'page' : undefined}
-                    className={[
-                      'text-base font-semibold relative group',
-                      'transition-all duration-300',
-                      active
-                        ? 'text-primary-600 dark:text-primary-400'
-                        : 'text-secondary-700 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400',
-                    ].join(' ')}
-                    onClick={() => pushDL('nav_click', { source: 'header_desktop', target: item.href })}
-                  >
-                    {item.name}
-                    <span
-                      className={[
-                        'absolute -bottom-1 right-0 h-0.5 bg-gradient-to-l from-primary-600 to-primary-400',
-                        'transition-all duration-300',
-                        active ? 'w-full' : 'w-0 group-hover:w-full',
-                      ].join(' ')}
-                    />
-                  </Link>
-                );
-              })}
+    <header
+      className={[
+        'fixed top-0 right-0 left-0 z-50',
+        'transition-all duration-300',
+        scrolled ? 'bg-white/80 dark:bg-secondary-900/80 backdrop-blur border-b border-black/5 dark:border-white/10 shadow'
+                 : 'bg-white/60 dark:bg-secondary-900/60 backdrop-blur border-b border-black/5 dark:border-white/10',
+      ].join(' ')}
+    >
+      <nav className="container-custom" aria-label="التنقل الرئيسي">
+        <div className="flex items-center justify-between h-20">
+          <Link to="/" className="flex items-center gap-2 group" aria-label="الذهاب للرئيسية">
+            <div className="w-10 h-10 gradient-primary rounded-lg flex items-center justify-center transition-all duration-300 group-hover:scale-110">
+              <Code2 className="w-6 h-6 text-white" />
             </div>
+            <span className="text-2xl font-bold text-gradient">icode</span>
+          </Link>
 
-            {/* Desktop actions */}
-            <div className="hidden lg:flex items-center gap-3">
-              <button
-                onClick={toggleTheme}
-                className="p-2 rounded-lg text-secondary-700 dark:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors"
-                aria-label="تبديل الوضع"
-                type="button"
-              >
-                {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-              </button>
+          <div className="hidden lg:flex items-center gap-8">
+            {navigation.map((item) => {
+              const active = isActive(item.href);
+              return (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  aria-current={active ? 'page' : undefined}
+                  onClick={() => pushDL('nav_click', { source: 'header_desktop', target: item.href })}
+                  className={[
+                    'text-base font-semibold transition-colors',
+                    active
+                      ? 'text-primary-600 dark:text-primary-400'
+                      : 'text-secondary-700 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400',
+                  ].join(' ')}
+                >
+                  {item.name}
+                </Link>
+              );
+            })}
+          </div>
 
-              {/* Secondary: Offer */}
-              <Link
-                to="/offer"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold border border-secondary-200 dark:border-secondary-700 hover:bg-secondary-50 dark:hover:bg-secondary-800 transition-all"
-                aria-label="عرض 7 أيام"
-                onClick={() => pushDL('nav_click', { source: 'header_desktop', target: '/offer' })}
-              >
-                <ArrowLeft className="w-4 h-4" />
-                <span>عرض 7 أيام</span>
-              </Link>
-
-              {/* Primary: WhatsApp */}
-              <a
-                href={waHref}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-2.5 gradient-primary text-white font-semibold rounded-lg hover:shadow-lg hover:shadow-primary-500/30 transition-all hover-glow"
-                aria-label="افتح واتساب الآن"
-                onClick={() => pushDL('lead_click', { source: 'header_desktop', channel: 'whatsapp', target: 'wa' })}
-              >
-                <PhoneCall className="w-4 h-4" />
-                <span>واتساب الآن (فضول)</span>
-              </a>
-            </div>
-
-            {/* Mobile toggle */}
+          <div className="hidden lg:flex items-center gap-3">
             <button
-              onClick={() => setMobileMenuOpen((v) => !v)}
-              className="lg:hidden p-2 rounded-lg text-secondary-700 dark:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors"
-              aria-label={mobileMenuOpen ? 'إغلاق القائمة' : 'فتح القائمة'}
-              aria-expanded={mobileMenuOpen}
-              aria-controls="mobile-menu"
+              onClick={toggleTheme}
+              className="p-2 rounded-lg text-secondary-700 dark:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors"
+              aria-label="تبديل الوضع"
               type="button"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
             </button>
-          </div>
-        </nav>
 
-        {/* Mobile menu */}
-        {mobileMenuOpen && (
-          <>
-            <div
-              className="lg:hidden fixed inset-0 bg-black/30 backdrop-blur-[2px] z-40"
-              onClick={() => setMobileMenuOpen(false)}
-              aria-hidden="true"
-            />
-
-            <div
-              id="mobile-menu"
-              className="lg:hidden relative z-50 glass-strong border-t border-white/10"
-              role="dialog"
-              aria-modal="true"
-              aria-label="قائمة الهاتف"
+            <Link
+              to="/offer"
+              onClick={() => pushDL('nav_click', { source: 'header_desktop', target: '/offer' })}
             >
-              <div className="container-custom py-6">
-                <div className="flex flex-col gap-4">
-                  {navigation.map((item) => {
-                    const active = isActive(item.href);
-                    return (
-                      <Link
-                        key={item.name}
-                        to={item.href}
-                        onClick={() => {
-                          setMobileMenuOpen(false);
-                          pushDL('nav_click', { source: 'header_mobile_menu', target: item.href });
-                        }}
-                        aria-current={active ? 'page' : undefined}
-                        className={[
-                          'text-lg font-semibold py-2 rounded-lg px-2',
-                          'transition-colors',
-                          active
-                            ? 'text-primary-600 dark:text-primary-400 bg-primary-50/60 dark:bg-secondary-800/60'
-                            : 'text-secondary-700 dark:text-secondary-300 hover:bg-secondary-50 dark:hover:bg-secondary-800/60',
-                        ].join(' ')}
-                      >
-                        {item.name}
-                      </Link>
-                    );
-                  })}
+              <Button variant="outline" icon={ArrowLeft}>
+                عرض 7 أيام
+              </Button>
+            </Link>
 
-                  <div className="flex items-center justify-between pt-4 border-t border-secondary-200 dark:border-secondary-700">
-                    <button
-                      onClick={toggleTheme}
-                      className="flex items-center gap-2 text-secondary-700 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-                      type="button"
-                    >
-                      {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-                      <span>{theme === 'light' ? 'الوضع الليلي' : 'الوضع النهاري'}</span>
-                    </button>
+            <a
+              href={waHref}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => pushDL('lead_click', { source: 'header_desktop', channel: 'whatsapp', target: 'wa' })}
+            >
+              <Button icon={PhoneCall}>واتساب الآن</Button>
+            </a>
+          </div>
 
-                    <a
-                      href={waHref}
-                      target="_blank"
-                      rel="noreferrer"
-                      onClick={() => pushDL('lead_click', { source: 'header_mobile_menu', channel: 'whatsapp', target: 'wa' })}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold border border-secondary-200 dark:border-secondary-700 hover:bg-secondary-50 dark:hover:bg-secondary-800 transition-all"
+          <button
+            onClick={() => setMobileMenuOpen((v) => !v)}
+            className="lg:hidden p-2 rounded-lg text-secondary-700 dark:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors"
+            aria-label={mobileMenuOpen ? 'إغلاق القائمة' : 'فتح القائمة'}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-menu"
+            type="button"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
+      </nav>
+
+      {mobileMenuOpen && (
+        <>
+          <div
+            className="lg:hidden fixed inset-0 bg-black/30 z-40"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-hidden="true"
+          />
+          <div
+            id="mobile-menu"
+            className="lg:hidden relative z-50 bg-white/95 dark:bg-secondary-900/95 backdrop-blur border-t border-black/5 dark:border-white/10"
+            role="dialog"
+            aria-modal="true"
+            aria-label="قائمة الهاتف"
+          >
+            <div className="container-custom py-6">
+              <div className="flex flex-col gap-4">
+                {navigation.map((item) => {
+                  const active = isActive(item.href);
+                  return (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        pushDL('nav_click', { source: 'header_mobile_menu', target: item.href });
+                      }}
+                      aria-current={active ? 'page' : undefined}
+                      className={[
+                        'text-lg font-semibold py-2 rounded-lg px-2 transition-colors',
+                        active
+                          ? 'text-primary-600 dark:text-primary-400 bg-primary-50/60 dark:bg-secondary-800/60'
+                          : 'text-secondary-700 dark:text-secondary-300 hover:bg-secondary-50 dark:hover:bg-secondary-800/60',
+                      ].join(' ')}
                     >
-                      <PhoneCall className="w-4 h-4" />
-                      <span>واتساب</span>
-                    </a>
-                  </div>
+                      {item.name}
+                    </Link>
+                  );
+                })}
+
+                <div className="flex items-center justify-between pt-4 border-t border-secondary-200 dark:border-secondary-700">
+                  <button
+                    onClick={toggleTheme}
+                    className="flex items-center gap-2 text-secondary-700 dark:text-secondary-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                    type="button"
+                  >
+                    {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+                    <span>{theme === 'light' ? 'الوضع الليلي' : 'الوضع النهاري'}</span>
+                  </button>
 
                   <a
                     href={waHref}
                     target="_blank"
                     rel="noreferrer"
-                    onClick={() => pushDL('lead_click', { source: 'header_mobile_menu_primary', channel: 'whatsapp', target: 'wa' })}
-                    className="w-full px-6 py-3 gradient-primary text-white font-semibold rounded-lg text-center hover-glow"
-                    aria-label="افتح واتساب الآن"
+                    onClick={() => pushDL('lead_click', { source: 'header_mobile_menu', channel: 'whatsapp', target: 'wa' })}
                   >
-                    واتساب الآن (فضول)
+                    <Button variant="outline">واتساب</Button>
                   </a>
                 </div>
+
+                <a
+                  href={waHref}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() => pushDL('lead_click', { source: 'header_mobile_menu_primary', channel: 'whatsapp', target: 'wa' })}
+                >
+                  <Button className="w-full" icon={PhoneCall}>
+                    واتساب الآن
+                  </Button>
+                </a>
               </div>
             </div>
-          </>
-        )}
-      </header>
-
-      {/* Mobile Sticky CTA (conversion boost) */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40">
-        <div className="container-custom pb-3">
-          <div className="glass-strong border border-white/10 rounded-2xl p-3 flex items-center gap-3">
-            <a
-              href={waHref}
-              target="_blank"
-              rel="noreferrer"
-              onClick={() => pushDL('lead_click', { source: 'sticky_mobile', channel: 'whatsapp', target: 'wa' })}
-              className="flex-1"
-              aria-label="واتساب الآن"
-            >
-              <Button className="w-full" icon={PhoneCall as any}>
-                واتساب الآن
-              </Button>
-            </a>
-
-            <Link
-              to="/offer"
-              onClick={() => pushDL('nav_click', { source: 'sticky_mobile', target: '/offer' })}
-              className="flex-1"
-              aria-label="عرض 7 أيام"
-            >
-              <Button className="w-full" variant="outline" icon={ArrowLeft}>
-                عرض 7 أيام
-              </Button>
-            </Link>
           </div>
-        </div>
-      </div>
-
-      {/* Spacer for sticky bar */}
-      <div className="lg:hidden h-16" />
-    </>
+        </>
+      )}
+    </header>
   );
 }
