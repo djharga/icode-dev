@@ -1,11 +1,11 @@
-// src/pages/Home.tsx (FULL UPDATED — zero hallucination, your structure kept, fixes are surgical)
-// إصلاحات إلزامية:
-// 1) WHATSAPP_PHONE كان placeholder غلط -> نفس رقمك الحقيقي 201507619503
-// 2) animation-delay-100 / -150 مش موجودين في index.css -> استبدالها بـ 200/400 (الموجودين فقط)
-// 3) إزالة import غير مستخدم (Shield كان مستخدم، تمام) + ترتيب
-// 4) تحسين events بأسماء ثابتة + payload واضح
-// 5) تحسين تحميل صورة البانر: decoding + fetchpriority + sizes
-// 6) لا تغيير في الفانل: Home -> WhatsApp OR /offer فقط
+```tsx
+// src/pages/Home.tsx (FULL UPDATED — surgical, conversion-first, zero fake claims)
+// Goals:
+// - Stronger first-10-seconds clarity (who / what / outcome)
+// - Remove any fabricated social proof (fake clients / fake stats / fake “300%” claims)
+// - Keep funnel unchanged: Home -> WhatsApp OR /offer only
+// - Keep your structure, but upgrade weak sections to “credible” equivalents
+// - Keep animation-delay classes only: 200 / 400
 
 import { Link } from 'react-router-dom';
 import {
@@ -48,76 +48,102 @@ export function Home() {
       'هل لديك دومين/استضافة؟',
       'الميزانية المتوقعة:',
       'موعد الإطلاق:',
+      '',
+      'ملاحظة: ابعت أي لينكات مشابهة تعجبك + شعار/ألوان لو موجودة.',
     ].join('\n')
   );
   const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_PHONE}?text=${WHATSAPP_PREFILL}`;
 
+  // Services: OK (credible)
   const services = [
-    { icon: Code2, title: 'تطوير المواقع', description: 'مواقع حديثة وسريعة بتقنيات متقدمة' },
-    { icon: Smartphone, title: 'تطبيقات الموبايل', description: 'تطبيقات أصلية ومتعددة المنصات' },
-    { icon: Server, title: 'الأنظمة المخصصة', description: 'حلول برمجية تناسب احتياجاتك' },
-    { icon: Shield, title: 'الأمن السيبراني', description: 'اختبارات اختراق وتحليل ثغرات' },
-    { icon: Zap, title: 'الأتمتة', description: 'سكربتات وحلول لأتمتة الأعمال' },
-    { icon: Users, title: 'استشارات تقنية', description: 'توجيه تقني واستشارات متخصصة' },
+    { icon: Code2, title: 'تطوير المواقع', description: 'مواقع سريعة، RTL جاهزة، وتجربة مستخدم واضحة' },
+    { icon: Smartphone, title: 'تطبيقات الموبايل', description: 'حلول عملية حسب احتياجك (هجين/أصلي) مع خطة إطلاق' },
+    { icon: Server, title: 'أنظمة مخصصة', description: 'لوحات تحكم + إدارة بيانات + صلاحيات + تقارير' },
+    { icon: Shield, title: 'أمن سيبراني', description: 'مراجعة ثغرات + تحسين إعدادات الحماية الأساسية' },
+    { icon: Zap, title: 'أتمتة الأعمال', description: 'سكربتات وعمليات لتقليل الوقت والجهد داخل شركتك' },
+    { icon: Users, title: 'استشارات تقنية', description: 'قرار تقني سريع: ما الذي تبنيه؟ وكيف؟ وبأي تكلفة؟' },
   ];
 
-  const projects = [
+  // Replace “مشاريع مختارة” (was implying past work) with “نماذج حلول جاهزة للتنفيذ”
+  // No claim “we built”. These are examples of what you can deliver.
+  const solutionExamples = [
     {
-      title: 'منصة Fintech',
-      category: 'التقنية المالية',
-      description: 'منصة مالية متكاملة لإدارة المدفوعات والمحافظ الرقمية',
-      tech: ['React', 'Node.js', 'PostgreSQL'],
+      title: 'موقع شركة + صفحات خدمات',
+      category: 'شركة / مكتب',
+      description: 'صفحة رئيسية + خدمات + أعمال + تواصل + واتساب + نموذج طلب عرض',
+      deliverables: ['تصميم UI', 'تجهيز RTL', 'سرعة وأداء', 'إعدادات حماية أساسية'],
     },
     {
-      title: 'نظام إدارة المحتوى',
-      category: 'SaaS',
-      description: 'نظام CMS متقدم مع لوحة تحكم قوية وإدارة محتوى ديناميكية',
-      tech: ['Next.js', 'Supabase', 'TypeScript'],
-    },
-    {
-      title: 'متجر إلكتروني',
+      title: 'متجر بسيط (MVP)',
       category: 'E-commerce',
-      description: 'منصة تجارة إلكترونية كاملة مع نظام دفع آمن',
-      tech: ['React', 'Express', 'MongoDB'],
+      description: 'كتالوج منتجات + سلة + طلبات + لوحة إدارة مبسطة (حسب النطاق)',
+      deliverables: ['هيكلة واضحة', 'تجربة شراء سهلة', 'صفحات قانونية', 'تحسين صور/أداء'],
+    },
+    {
+      title: 'نظام حجز للعيادات',
+      category: 'عيادة / خدمات',
+      description: 'مواعيد + حجز + إشعارات + إدارة مرضى/عملاء (حسب النطاق)',
+      deliverables: ['صلاحيات', 'تقارير بسيطة', 'سجل حجوزات', 'واجهة سهلة'],
     },
   ];
 
-  const testimonials = [
+  // Replace “Testimonials” fake with “ضمانات ثقة” (credible)
+  const trustPillars = [
     {
-      name: 'أحمد محمد',
-      role: 'مدير تقني',
-      company: 'TechStart',
-      content: 'فريق icode قدم لنا حلولاً تقنية متقدمة فاقت توقعاتنا. الاحترافية والجودة واضحة في كل تفصيل.',
-      rating: 5,
+      icon: CheckCircle,
+      title: 'نطاق واضح قبل البدء',
+      desc: 'بنكتب المتطلبات والصفحات والتسليمات بوضوح عشان مفيش مفاجآت.',
     },
     {
-      name: 'سارة العلي',
-      role: 'مؤسسة',
-      company: 'Digital Solutions',
-      content: 'تجربة رائعة من البداية للنهاية. التواصل ممتاز والتسليم في الوقت المحدد.',
-      rating: 5,
+      icon: Shield,
+      title: 'أساسيات حماية',
+      desc: 'إعدادات أمان أولية: HTTPS، حماية نماذج، تهيئة هيدر/سياسات مناسبة حسب المشروع.',
     },
     {
-      name: 'خالد السعيد',
-      role: 'صاحب شركة',
-      company: 'E-Shop Pro',
-      content: 'بنوا لنا متجراً إلكترونياً احترافياً ساهم في زيادة مبيعاتنا بنسبة 300%.',
-      rating: 5,
+      icon: Zap,
+      title: 'أداء وتجربة مستخدم',
+      desc: 'أولوية للسرعة وسهولة الاستخدام بدل “زينة” لا تخدم الهدف.',
+    },
+    {
+      icon: Award,
+      title: 'كود نظيف',
+      desc: 'هيكلة قابلة للصيانة والتطوير بدل ترقيعات.',
     },
   ];
 
-  const stats = [
-    { value: '150+', label: 'مشروع منجز' },
-    { value: '100+', label: 'عميل راضٍ' },
-    { value: '5+', label: 'سنوات خبرة' },
-    { value: '98%', label: 'نسبة الرضا' },
+  // Replace fake “stats” with “مؤشرات تسليم” (no numbers)
+  const deliveryIndicators = [
+    { value: '7 أيام', label: 'MVP سريع (للعرض المحدد)' },
+    { value: 'RTL', label: 'واجهة عربية احترافية' },
+    { value: 'أمان', label: 'إعدادات حماية أساسية' },
+    { value: 'أداء', label: 'تحسين سرعة وتجربة' },
   ];
 
   const workProcess = [
-    { number: '01', title: 'التواصل والفهم', description: 'نستمع لمتطلباتك ونفهم أهدافك بدقة' },
-    { number: '02', title: 'التخطيط والتصميم', description: 'نضع خطة محكمة ونصمم الحل الأمثل' },
-    { number: '03', title: 'التطوير والاختبار', description: 'نبني المنتج بأعلى معايير الجودة' },
-    { number: '04', title: 'الإطلاق والدعم', description: 'نطلق المشروع ونقدم دعماً مستمراً' },
+    { number: '01', title: 'تحديد النطاق', description: 'هدف الصفحة + الصفحات المطلوبة + مخرجات واضحة' },
+    { number: '02', title: 'تصميم سريع', description: 'شكل عملي يخدم الهدف (مش تجميل فارغ)' },
+    { number: '03', title: 'تطوير واختبار', description: 'بناء + مراجعة أداء + إصلاحات قبل التسليم' },
+    { number: '04', title: 'إطلاق وتسليم', description: 'نشر + تسليم ملفات/حسابات + نقاط تشغيل واضحة' },
+  ];
+
+  // FAQ (conversion + objection handling)
+  const faqs = [
+    {
+      q: 'هل “7 أيام” لكل المشاريع؟',
+      a: 'العرض مخصص لموقع/صفحات محددة بنطاق واضح (MVP). المشاريع الكبيرة أو الأنظمة العميقة لها جدول مختلف.',
+    },
+    {
+      q: 'إيه المطلوب مني عشان نبدأ؟',
+      a: 'فكرة واضحة + أمثلة مواقع تعجبك + لوجو/ألوان لو موجودة. والباقي بنرتبه معك.',
+    },
+    {
+      q: 'هل في ضمان؟',
+      a: 'الضمان مرتبط بالنطاق المكتوب: لو اتفقنا على صفحات/مخرجات ولم تُسلَّم كما هو، يتم التصحيح وفق الاتفاق.',
+    },
+    {
+      q: 'هل تقدم استضافة ودومين؟',
+      a: 'نقدر نساعدك في اختيار وتهيئة الدومين والاستضافة، أو نشتغل على حساباتك أنت.',
+    },
   ];
 
   return (
@@ -132,24 +158,26 @@ export function Home() {
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="text-center lg:text-right order-2 lg:order-1">
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-secondary-900 dark:text-white mb-6 animate-fade-in">
-                  نبني <span className="text-gradient">الحلول البرمجية</span>
+                  نبني <span className="text-gradient">موقعك أو نظامك</span>
                   <br />
-                  التي تصنع الفارق
+                  بنطاق واضح ونتيجة ملموسة
                 </h1>
 
+                {/* Stronger promise: keep your offer but make it credible */}
                 <p className="text-lg md:text-xl text-secondary-600 dark:text-secondary-300 mb-3 leading-relaxed animate-slide-up">
-                  نحوّل فكرتك لموقع شغال خلال 7 أيام — أو لا تدفع شيئًا.
+                  موقع شغال خلال 7 أيام (للعرض المحدد) — بنطاق مكتوب وتسليمات واضحة.
                 </p>
+
                 <p className="text-base md:text-lg text-secondary-500 dark:text-secondary-400 mb-8 animate-slide-up animation-delay-200">
-                  مناسب للشركات الناشئة، المتاجر، العيادات، والمشاريع اللي محتاجة نتائج سريعة.
+                  مناسب للشركات الناشئة، المتاجر، العيادات، وكل مشروع محتاج إطلاق سريع بدون فوضى.
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8 animate-slide-up animation-delay-400">
                   {[
-                    { icon: CheckCircle, text: 'تسليم بموعد واضح + خطة عمل' },
-                    { icon: Shield, text: 'أمان أساسي + إعدادات حماية' },
-                    { icon: Zap, text: 'سرعة عالية وتجربة مستخدم محسّنة' },
-                    { icon: Award, text: 'كود نظيف ومعايير صناعية' },
+                    { icon: CheckCircle, text: 'نطاق واضح + موعد تسليم محدد' },
+                    { icon: Shield, text: 'أساسيات حماية قبل الإطلاق' },
+                    { icon: Zap, text: 'أداء وتجربة مستخدم قبل الزينة' },
+                    { icon: Award, text: 'هيكلة قابلة للتوسع والصيانة' },
                   ].map((b, i) => (
                     <div
                       key={i}
@@ -161,12 +189,13 @@ export function Home() {
                   ))}
                 </div>
 
-                {/* PHASE 3 CTA: WhatsApp + /offer only */}
+                {/* CTA: WhatsApp + /offer only */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-slide-up animation-delay-400">
                   <a
                     href={WHATSAPP_LINK}
                     target="_blank"
                     rel="noreferrer"
+                    aria-label="ابدأ على واتساب الآن"
                     onClick={() =>
                       pushDL('lead_click', {
                         channel: 'whatsapp',
@@ -182,6 +211,7 @@ export function Home() {
 
                   <Link
                     to="/offer"
+                    aria-label="عرض 7 أيام"
                     onClick={() =>
                       pushDL('nav_click', {
                         source: 'home_hero',
@@ -196,7 +226,7 @@ export function Home() {
                 </div>
 
                 <p className="mt-5 text-sm text-secondary-500 dark:text-secondary-400">
-                  ملاحظة: قبل البدء بنحدد النطاق والميزانية بوضوح لتجنب إهدار الوقت.
+                  ملاحظة: قبل أي تنفيذ، نكتب النطاق والميزانية والتسليمات لتجنب أي لبس.
                 </p>
               </div>
 
@@ -215,11 +245,21 @@ export function Home() {
                 </div>
               </div>
             </div>
+
+            {/* QUICK PROOF STRIP (credible, no fake numbers) */}
+            <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-3">
+              {deliveryIndicators.map((it, idx) => (
+                <Card key={idx} className="p-4 text-center" hover>
+                  <div className="text-2xl font-bold text-secondary-900 dark:text-white">{it.value}</div>
+                  <div className="text-sm text-secondary-600 dark:text-secondary-300">{it.label}</div>
+                </Card>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* WHY US */}
+      {/* WHY US -> rewrite copy to be concrete */}
       <section className="section-padding bg-secondary-50 dark:bg-secondary-900">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center mb-16">
@@ -227,26 +267,17 @@ export function Home() {
               لماذا <span className="text-gradient">icode</span>؟
             </h2>
             <p className="text-xl text-secondary-600 dark:text-secondary-300 leading-relaxed">
-              نجمع بين الخبرة التقنية العميقة والفهم الشامل لاحتياجات الأعمال لنقدم حلولاً برمجية تتجاوز التوقعات
+              لأننا نشتغل بمنهجية: نطاق واضح → تنفيذ سريع → تسليم قابل للتطوير. بدون ضبابية ولا وعود عامة.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              { icon: Award, title: 'جودة عالية', desc: 'كود نظيف ومعايير صناعية' },
-              { icon: Zap, title: 'تسليم سريع', desc: 'نلتزم بالمواعيد المحددة' },
-              { icon: Shield, title: 'أمان متقدم', desc: 'حماية بيانات على أعلى مستوى' },
-              { icon: Users, title: 'دعم مستمر', desc: 'نكون معك بعد الإطلاق' },
-              { icon: TrendingUp, title: 'قابلية التوسع', desc: 'حلول تنمو مع عملك' },
-              { icon: CheckCircle, title: 'ضمان الجودة', desc: 'نضمن رضاك الكامل' },
-            ].map((item, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {trustPillars.map((item, index) => (
               <Card key={index} className="p-8 text-center" hover>
                 <div className="w-16 h-16 gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <item.icon className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-secondary-900 dark:text-white mb-3">
-                  {item.title}
-                </h3>
+                <h3 className="text-xl font-bold text-secondary-900 dark:text-white mb-3">{item.title}</h3>
                 <p className="text-secondary-600 dark:text-secondary-300">{item.desc}</p>
               </Card>
             ))}
@@ -271,10 +302,10 @@ export function Home() {
         <div className="container-custom">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-secondary-900 dark:text-white mb-6">
-              خدماتنا المتميزة
+              خدماتنا
             </h2>
             <p className="text-xl text-secondary-600 dark:text-secondary-300">
-              حلول شاملة تغطي كل احتياجاتك التقنية
+              اختَر ما يناسب احتياجك — أو ابدأ بالعرض السريع ثم نوسع لاحقًا.
             </p>
           </div>
 
@@ -282,12 +313,8 @@ export function Home() {
             {services.map((service, index) => (
               <Card key={index} className="p-8" hover>
                 <service.icon className="w-12 h-12 text-primary-600 mb-6" />
-                <h3 className="text-2xl font-bold text-secondary-900 dark:text-white mb-4">
-                  {service.title}
-                </h3>
-                <p className="text-secondary-600 dark:text-secondary-300 leading-relaxed">
-                  {service.description}
-                </p>
+                <h3 className="text-2xl font-bold text-secondary-900 dark:text-white mb-4">{service.title}</h3>
+                <p className="text-secondary-600 dark:text-secondary-300 leading-relaxed">{service.description}</p>
               </Card>
             ))}
           </div>
@@ -295,9 +322,7 @@ export function Home() {
           <div className="text-center mt-12">
             <Link
               to="/services"
-              onClick={() =>
-                pushDL('nav_click', { target: '/services', source: 'home_services' })
-              }
+              onClick={() => pushDL('nav_click', { target: '/services', source: 'home_services' })}
             >
               <Button size="lg" variant="outline" icon={ArrowLeft}>
                 عرض جميع الخدمات
@@ -312,7 +337,7 @@ export function Home() {
         <div className="container-custom">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">طريقة عملنا</h2>
-            <p className="text-xl text-secondary-300">منهجية واضحة وشفافة في كل مرحلة</p>
+            <p className="text-xl text-secondary-300">أربع مراحل بسيطة تقلل التشتت وتسرّع التسليم.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -341,39 +366,38 @@ export function Home() {
         </div>
       </section>
 
-      {/* PROJECTS */}
+      {/* SOLUTION EXAMPLES (credible replacement for “Projects”) */}
       <section className="section-padding">
         <div className="container-custom">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-secondary-900 dark:text-white mb-6">
-              مشاريع مختارة
+              أمثلة حلول قابلة للتنفيذ
             </h2>
             <p className="text-xl text-secondary-600 dark:text-secondary-300">
-              نماذج من أعمالنا الناجحة
+              نماذج لما يمكن تسليمه حسب النطاق — الهدف إنك تتخيل النتيجة بسرعة.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projects.map((project, index) => (
+            {solutionExamples.map((item, index) => (
               <Card key={index} className="overflow-hidden" hover>
-                <div className="h-48 gradient-primary opacity-20" />
+                <div className="h-40 gradient-primary opacity-20" />
                 <div className="p-8">
                   <span className="inline-block px-4 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 rounded-full text-sm font-semibold mb-4">
-                    {project.category}
+                    {item.category}
                   </span>
-                  <h3 className="text-2xl font-bold text-secondary-900 dark:text-white mb-4">
-                    {project.title}
+                  <h3 className="text-2xl font-bold text-secondary-900 dark:text-white mb-3">
+                    {item.title}
                   </h3>
-                  <p className="text-secondary-600 dark:text-secondary-300 mb-6">
-                    {project.description}
-                  </p>
+                  <p className="text-secondary-600 dark:text-secondary-300 mb-6">{item.description}</p>
+
                   <div className="flex flex-wrap gap-2">
-                    {project.tech.map((tech) => (
+                    {item.deliverables.map((d) => (
                       <span
-                        key={tech}
+                        key={d}
                         className="px-3 py-1 bg-secondary-100 dark:bg-secondary-800 text-secondary-700 dark:text-secondary-300 rounded-lg text-sm"
                       >
-                        {tech}
+                        {d}
                       </span>
                     ))}
                   </div>
@@ -384,97 +408,68 @@ export function Home() {
 
           <div className="text-center mt-12">
             <Link
-              to="/portfolio"
-              onClick={() =>
-                pushDL('nav_click', { target: '/portfolio', source: 'home_projects' })
-              }
+              to="/offer"
+              onClick={() => pushDL('nav_click', { target: '/offer', source: 'home_solution_examples' })}
             >
               <Button size="lg" variant="outline" icon={ArrowLeft}>
-                عرض جميع الأعمال
+                اختَر العرض المناسب
               </Button>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* TESTIMONIALS */}
+      {/* FAQ (replaces fake testimonials) */}
       <section className="section-padding bg-secondary-50 dark:bg-secondary-900">
         <div className="container-custom">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-secondary-900 dark:text-white mb-6">
-              آراء عملائنا
+              أسئلة سريعة قبل البدء
             </h2>
             <p className="text-xl text-secondary-600 dark:text-secondary-300">
-              ثقة عملائنا هي أكبر إنجازاتنا
+              إجابات واضحة لتقليل القلق والتردد.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <Card key={index} className="p-8" hover>
-                <div className="flex gap-1 mb-6" aria-label={`تقييم ${testimonial.rating} من 5`}>
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <span key={i} className="text-2xl text-accent-500" aria-hidden="true">
-                      ★
-                    </span>
-                  ))}
-                </div>
-                <p className="text-secondary-700 dark:text-secondary-300 leading-relaxed mb-6">
-                  "{testimonial.content}"
-                </p>
-                <div>
-                  <p className="font-bold text-secondary-900 dark:text-white">{testimonial.name}</p>
-                  <p className="text-secondary-600 dark:text-secondary-400 text-sm">
-                    {testimonial.role} - {testimonial.company}
-                  </p>
-                </div>
+          <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+            {faqs.map((f, i) => (
+              <Card key={i} className="p-8" hover>
+                <h3 className="text-xl font-bold text-secondary-900 dark:text-white mb-3">{f.q}</h3>
+                <p className="text-secondary-600 dark:text-secondary-300 leading-relaxed">{f.a}</p>
               </Card>
             ))}
           </div>
 
-          {/* TESTIMONIAL CTA */}
           <div className="text-center mt-12">
             <Link
               to="/offer"
-              onClick={() => pushDL('nav_click', { target: '/offer', source: 'home_testimonials' })}
+              onClick={() => pushDL('nav_click', { target: '/offer', source: 'home_faq' })}
             >
               <Button size="lg" variant="outline" icon={ArrowLeft}>
-                خُد العرض الآن
+                شوف عرض 7 أيام
               </Button>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* STATS */}
-      <section className="section-padding gradient-primary text-white">
-        <div className="container-custom">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-5xl md:text-6xl font-bold mb-2">{stat.value}</div>
-                <div className="text-lg text-white/80">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FINAL CTA (PHASE 3) */}
+      {/* FINAL CTA */}
       <section className="section-padding">
         <div className="container-custom">
           <Card className="p-12 md:p-16 text-center" glass>
             <h2 className="text-3xl md:text-4xl font-bold text-secondary-900 dark:text-white mb-6">
-              جاهز لبدء مشروعك؟
+              جاهز نحدد النطاق ونبدأ؟
             </h2>
             <p className="text-xl text-secondary-600 dark:text-secondary-300 mb-8 max-w-2xl mx-auto">
-              ابدأ فورًا بعرض 7 أيام أو افتح واتساب وحدد النطاق.
+              ابدأ بعرض 7 أيام أو افتح واتساب الآن — ونقفل المتطلبات بوضوح قبل التنفيذ.
             </p>
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href={WHATSAPP_LINK}
                 target="_blank"
                 rel="noreferrer"
+                aria-label="ابدأ على واتساب الآن"
                 onClick={() =>
                   pushDL('lead_click', {
                     channel: 'whatsapp',
@@ -487,8 +482,10 @@ export function Home() {
                   ابدأ على واتساب الآن
                 </Button>
               </a>
+
               <Link
                 to="/offer"
+                aria-label="شوف عرض 7 أيام"
                 onClick={() =>
                   pushDL('nav_click', {
                     source: 'home_footer',
@@ -501,9 +498,14 @@ export function Home() {
                 </Button>
               </Link>
             </div>
+
+            <p className="mt-5 text-sm text-secondary-500 dark:text-secondary-400">
+              لو عندك دومين بكرة، ممتاز. هنربط وننشر بدون تعقيد.
+            </p>
           </Card>
         </div>
       </section>
     </div>
   );
 }
+```
