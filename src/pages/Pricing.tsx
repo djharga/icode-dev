@@ -1,129 +1,203 @@
+// src/pages/Pricing.tsx (FULL UPDATED — Global-grade + Funnel + No $ + EGP + GTM)
+// هدف الصفحة: تحويل واضح إلى (/offer) أو WhatsApp فقط + إزالة تسعير بالدولار
+// Copy-Paste جاهز
+
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { CheckCircle, ArrowLeft, Star } from 'lucide-react';
+import { CheckCircle, ArrowLeft, Star, Shield, Zap, Timer } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 
+declare global {
+  interface Window {
+    dataLayer?: unknown[];
+  }
+}
+
+function pushDL(event: string, payload: Record<string, unknown> = {}) {
+  if (!window.dataLayer) window.dataLayer = [];
+  window.dataLayer.push({ event, ...payload });
+}
+
+type Tier = {
+  id: string;
+  name: string;
+  subtitle: string;
+  price: string;
+  priceNote: string;
+  features: string[];
+  duration: string;
+  support: string;
+  recommended?: boolean;
+};
+
 export function Pricing() {
-  const pricingTiers = [
+  // ===== Funnel config =====
+  const WHATSAPP_PHONE = '201507619503';
+  const WHATSAPP_PREFILL = useMemo(
+    () =>
+      encodeURIComponent(
+        [
+          'عايز عرض سعر.',
+          '',
+          'نوع المشروع:',
+          'الباقة (إن وجدت):',
+          'عدد الصفحات/الأقسام:',
+          'هل يوجد دومين/استضافة؟',
+          'موعد الإطلاق:',
+          'ميزانية تقريبية:',
+          'تفاصيل مختصرة:',
+        ].join('\n')
+      ),
+    []
+  );
+  const WHATSAPP_LINK = useMemo(
+    () => `https://wa.me/${WHATSAPP_PHONE}?text=${WHATSAPP_PREFILL}`,
+    [WHATSAPP_PREFILL]
+  );
+
+  // ===== Pricing (EGP) =====
+  // ملاحظة: الأرقام أمثلة منطقية للسوق المصري — عدّلها حسب سياستك إن لزم.
+  const pricingTiers: Tier[] = [
     {
+      id: 'basic',
       name: 'الباقة الأساسية',
-      subtitle: 'للمواقع التعريفية والصفحات البسيطة',
-      price: '$25',
-      priceNote: 'للموقع الواحد',
+      subtitle: 'للموقع التعريفي والصفحات البسيطة',
+      price: '4,999 جنيه',
+      priceNote: 'نطاق محدد — موقع واحد',
       features: [
-        'موقع تعريفي من 3-5 صفحات',
+        'موقع 3–5 صفحات (رئيسية + خدمات + من نحن + تواصل + صفحة إضافية)',
         'تصميم متجاوب لجميع الأجهزة',
-        'تحسين محركات البحث الأساسي',
-        'نموذج تواصل واحد',
-        'استضافة لمدة 3 أشهر مجاناً',
-        'شهادة SSL آمنة',
-        'دعم فني لمدة 30 يوم',
+        'SEO أساسي (Meta + OG + سرعة + فهرسة)',
+        'نموذج تواصل واحد + ربط واتساب',
+        'إعدادات أمان أساسية + SSL',
+        'تسليم ملفات المشروع + إرشادات تشغيل',
+        'دعم فني 14 يوم بعد التسليم',
       ],
-      duration: '1-2 أسابيع',
-      support: 'دعم عبر الواتساب',
-      recommended: false,
+      duration: '5–10 أيام عمل',
+      support: 'واتساب (ساعات العمل)',
     },
     {
+      id: 'pro',
       name: 'الباقة الاحترافية',
-      subtitle: 'للشركات والأعمال المتوسطة',
-      price: '$100',
-      priceNote: 'للموقع الواحد',
+      subtitle: 'للشركات والأعمال الجادة',
+      price: '12,999 جنيه',
+      priceNote: 'الأكثر طلباً — موقع واحد',
       features: [
-        'موقع كامل متعدد الصفحات',
-        'عدد غير محدود من الصفحات',
-        'لوحة تحكم بسيطة',
-        'تحسين SEO متقدم',
-        'استضافة لمدة 6 أشهر مجاناً',
-        'تدريب على استخدام النظام',
-        'دعم فني لمدة 60 يوم',
-        'تحديثات مجانية لمدة 3 أشهر',
-        'نماذج متعددة وتصميم مخصص',
+        'عدد صفحات أكبر + أقسام تسويقية كاملة',
+        'تجربة مستخدم محسّنة (Funnel + CTAs + Sections منظمة)',
+        'SEO متقدم (هيكلة + صفحات خدمة + داخلي)',
+        'نماذج متعددة (تواصل/استشارة) + تخزين Leads (Supabase)',
+        'تحسين أداء وتحميل + Lazy loading',
+        'تهيئة GTM Events أساسية للقياس',
+        'جولتان مراجعة أثناء التنفيذ',
+        'دعم فني 30 يوم بعد التسليم',
       ],
-      duration: '2-4 أسابيع',
-      support: 'دعم سريع عبر الواتساب',
+      duration: '10–20 يوم عمل',
+      support: 'واتساب سريع + أولوية أعلى',
       recommended: true,
     },
     {
+      id: 'advanced',
       name: 'الباقة المتقدمة',
-      subtitle: 'للمواقع الكبيرة والمتطورة',
-      price: '$150',
-      priceNote: 'للموقع الواحد',
+      subtitle: 'لمواقع كبيرة / متطلبات خاصة',
+      price: '24,999 جنيه',
+      priceNote: 'حسب النطاق — موقع واحد',
       features: [
-        'موقع متكامل مع ميزات متقدمة',
-        'تصميم مخصص بالكامل',
-        'لوحة تحكم متقدمة',
-        'تكامل مع أنظمة خارجية',
-        'SEO احترافي وتحليلات متقدمة',
-        'استضافة لمدة سنة مجاناً',
-        'تدريب شامل ومستندات كاملة',
-        'دعم فني لمدة 90 يوم',
-        'تحديثات مجانية لمدة 6 أشهر',
-        'نظام إدارة محتوى قوي',
+        'تصميم مخصص بالكامل + نظام أقسام قابل للتوسع',
+        'لوحة إدارة/بوابة (حسب الحاجة) أو تكاملات خارجية',
+        'SEO احترافي + تحسين صفحات متعددة',
+        'تحليلات متقدمة + Events أدق (حسب مسار المستخدم)',
+        'أمان أعلى (مراجعة إعدادات + Hardening أساسي)',
+        'مستندات تسليم (Runbook) + تدريب مختصر',
+        '3 جولات مراجعة أثناء التنفيذ',
+        'دعم فني 60 يوم بعد التسليم',
       ],
-      duration: '4-6 أسابيع',
-      support: 'دعم أولوية على مدار الساعة',
-      recommended: false,
+      duration: '20–35 يوم عمل',
+      support: 'أولوية أعلى (حسب الاتفاق)',
     },
   ];
 
   const otherServices = [
-    {
-      title: 'تطبيقات الموبايل',
-      description: 'تطبيقات iOS و Android أصلية أو متعددة المنصات',
-      note: 'سعر حسب التفاصيل',
-    },
-    {
-      title: 'الأنظمة المخصصة',
-      description: 'أنظمة إدارة وحلول برمجية متكاملة حسب احتياجاتك',
-      note: 'سعر حسب التفاصيل',
-    },
-    {
-      title: 'الأمن السيبراني',
-      description: 'اختبارات اختراق وتحليل ثغرات وحماية',
-      note: 'سعر حسب التفاصيل',
-    },
-    {
-      title: 'الاستشارات التقنية',
-      description: 'توجيه تقني وخطط تنفيذ للمشاريع',
-      note: 'سعر حسب التفاصيل',
-    },
-    {
-      title: 'الصيانة والدعم',
-      description: 'صيانة شهرية وتحديثات مستمرة',
-      note: 'باقات شهرية مخصصة',
-    },
-    {
-      title: 'الأتمتة والسكربتات',
-      description: 'حلول أتمتة للعمليات والمهام المتكررة',
-      note: 'سعر حسب التفاصيل',
-    },
+    { title: 'تطبيقات الموبايل', description: 'iOS/Android (Native أو Cross-platform)', note: 'تسعير حسب التفاصيل' },
+    { title: 'الأنظمة المخصصة', description: 'CRM/ERP/لوحات متابعة/بوابات عملاء', note: 'تسعير حسب النطاق' },
+    { title: 'الأمن السيبراني', description: 'VAPT + مراجعة إعدادات + تقارير', note: 'حسب حجم النظام' },
+    { title: 'الاستشارات التقنية', description: 'تخطيط/معمارية/مراجعة كود', note: 'جلسات مدفوعة/باقات' },
+    { title: 'الصيانة والدعم', description: 'صيانة شهرية + تحديثات + مراقبة', note: 'باقات شهرية' },
+    { title: 'الأتمتة والسكربتات', description: 'Automation + تكامل بين الأنظمة', note: 'حسب الهدف' },
   ];
 
   return (
-    <div className="min-h-screen pt-20">
+    <div className="min-h-screen pt-20 overflow-x-hidden">
+      {/* HERO */}
       <section className="section-padding gradient-primary text-white">
         <div className="container-custom">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              أسعار تصميم المواقع
-            </h1>
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">الأسعار</h1>
             <p className="text-xl md:text-2xl leading-relaxed text-white/90">
-              باقات واضحة وشفافة لتصميم المواقع الإلكترونية. الأسعار تبدأ من $25 وحتى $150 حسب حجم المشروع
+              باقات واضحة وشفافة. هدفنا: موقع سريع + Funnel واضح + قياس قابل للتتبع.
             </p>
-            <p className="text-lg mt-4 text-white/80">
-              لباقي الخدمات (تطبيقات الموبايل، الأنظمة المخصصة، الأمن السيبراني)، احجز استشارة مجانية للحصول على عرض سعر وجدول زمني مخصص
+
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="flex items-center justify-center gap-2 bg-white/10 border border-white/15 rounded-2xl py-4">
+                <Timer className="w-5 h-5" />
+                <span className="font-semibold">تسليم بموعد محدد</span>
+              </div>
+              <div className="flex items-center justify-center gap-2 bg-white/10 border border-white/15 rounded-2xl py-4">
+                <Zap className="w-5 h-5" />
+                <span className="font-semibold">أداء سريع</span>
+              </div>
+              <div className="flex items-center justify-center gap-2 bg-white/10 border border-white/15 rounded-2xl py-4">
+                <Shield className="w-5 h-5" />
+                <span className="font-semibold">أمان أساسي</span>
+              </div>
+            </div>
+
+            {/* Funnel CTA */}
+            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                to="/offer"
+                onClick={() => pushDL('nav_click', { target: '/offer', source: 'pricing_hero' })}
+              >
+                <Button size="lg" icon={ArrowLeft}>
+                  افتح عرض 7 أيام
+                </Button>
+              </Link>
+
+              <a
+                href={WHATSAPP_LINK}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => pushDL('lead_click', { source: 'pricing_hero_whatsapp' })}
+              >
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-white/70 text-white bg-white/10 hover:bg-white/20 hover:text-white hover:border-white/90"
+                >
+                  تواصل على واتساب
+                </Button>
+              </a>
+            </div>
+
+            <p className="text-sm mt-5 text-white/80">
+              ملاحظة: الأرقام تعكس نطاقات شائعة. التسعير النهائي يتحدد بعد تحديد النطاق (Scope).
             </p>
           </div>
         </div>
       </section>
 
+      {/* TIERS */}
       <section className="section-padding">
         <div className="container-custom">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {pricingTiers.map((tier, index) => (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+            {pricingTiers.map((tier) => (
               <Card
-                key={index}
-                className={`p-8 relative ${tier.recommended ? 'ring-2 ring-primary-500 scale-105' : ''}`}
+                key={tier.id}
+                className={[
+                  'p-8 relative h-full',
+                  tier.recommended ? 'ring-2 ring-primary-500 shadow-soft' : '',
+                ].join(' ')}
                 hover={false}
               >
                 {tier.recommended && (
@@ -134,218 +208,236 @@ export function Pricing() {
                 )}
 
                 <div className="text-center mb-8">
-                  <h2 className="text-2xl font-bold text-secondary-900 dark:text-white mb-2">
-                    {tier.name}
-                  </h2>
-                  <p className="text-secondary-600 dark:text-secondary-300 mb-4">
-                    {tier.subtitle}
-                  </p>
+                  <h2 className="text-2xl font-bold text-secondary-900 dark:text-white mb-2">{tier.name}</h2>
+                  <p className="text-secondary-600 dark:text-secondary-300 mb-4">{tier.subtitle}</p>
+
                   <div className="text-center">
-                    <div className="text-5xl font-bold text-gradient mb-1">
-                      {tier.price}
-                    </div>
-                    <div className="text-sm text-secondary-500 dark:text-secondary-400">
-                      {tier.priceNote}
-                    </div>
+                    <div className="text-5xl font-bold text-gradient mb-1">{tier.price}</div>
+                    <div className="text-sm text-secondary-500 dark:text-secondary-400">{tier.priceNote}</div>
                   </div>
                 </div>
 
                 <div className="mb-8">
-                  <h3 className="text-lg font-bold text-secondary-900 dark:text-white mb-4">
-                    ما يشمله:
-                  </h3>
+                  <h3 className="text-lg font-bold text-secondary-900 dark:text-white mb-4">ما يشمله:</h3>
                   <ul className="space-y-3">
                     {tier.features.map((feature, i) => (
                       <li key={i} className="flex items-start gap-3">
                         <CheckCircle className="w-5 h-5 text-success-500 flex-shrink-0 mt-0.5" />
-                        <span className="text-secondary-700 dark:text-secondary-300">
-                          {feature}
-                        </span>
+                        <span className="text-secondary-700 dark:text-secondary-300">{feature}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
                 <div className="mb-6 p-4 bg-secondary-50 dark:bg-secondary-800 rounded-lg space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-secondary-600 dark:text-secondary-400">
-                      مدة التنفيذ:
-                    </span>
-                    <span className="font-semibold text-secondary-900 dark:text-white">
-                      {tier.duration}
-                    </span>
+                  <div className="flex justify-between gap-4">
+                    <span className="text-secondary-600 dark:text-secondary-400">مدة التنفيذ:</span>
+                    <span className="font-semibold text-secondary-900 dark:text-white">{tier.duration}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-secondary-600 dark:text-secondary-400">
-                      الدعم الفني:
-                    </span>
-                    <span className="font-semibold text-secondary-900 dark:text-white">
-                      {tier.support}
-                    </span>
+                  <div className="flex justify-between gap-4">
+                    <span className="text-secondary-600 dark:text-secondary-400">الدعم الفني:</span>
+                    <span className="font-semibold text-secondary-900 dark:text-white">{tier.support}</span>
                   </div>
                 </div>
 
-                <Link to="/contact" className="block">
-                  <Button
-                    className="w-full"
-                    variant={tier.recommended ? 'primary' : 'outline'}
-                    icon={ArrowLeft}
+                {/* Funnel-only CTA: WhatsApp or /offer */}
+                <div className="grid grid-cols-1 gap-3">
+                  <Link
+                    to="/offer"
+                    onClick={() => pushDL('nav_click', { target: '/offer', source: 'pricing_tier', tier: tier.id })}
                   >
-                    اطلب عرض سعر
-                  </Button>
-                </Link>
+                    <Button className="w-full" icon={ArrowLeft}>
+                      ابدأ بعرض 7 أيام
+                    </Button>
+                  </Link>
+
+                  <a
+                    href={WHATSAPP_LINK}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => pushDL('lead_click', { source: 'pricing_tier_whatsapp', tier: tier.id })}
+                  >
+                    <Button className="w-full" variant="outline">
+                      اسأل عن الباقة على واتساب
+                    </Button>
+                  </a>
+                </div>
               </Card>
             ))}
           </div>
 
+          {/* CUSTOM PROJECT BOX */}
           <div className="mt-16">
-            <Card className="p-8 text-center" gradient>
-              <h3 className="text-2xl font-bold text-secondary-900 dark:text-white mb-4">
-                تحتاج مشروعاً خاصاً؟
+            <Card className="p-8 md:p-12 text-center glass">
+              <h3 className="text-2xl md:text-3xl font-bold text-secondary-900 dark:text-white mb-4">
+                تحتاج نطاق مختلف أو خدمة غير المواقع؟
               </h3>
-              <p className="text-lg text-secondary-600 dark:text-secondary-300 mb-6 max-w-2xl mx-auto">
-                الأسعار أعلاه تنطبق على <span className="font-bold">تصميم المواقع فقط</span>.
-                إذا كنت تحتاج تطبيق موبايل، نظام مخصص، أو خدمات أخرى، سنقدم لك:
+              <p className="text-lg text-secondary-600 dark:text-secondary-300 mb-8 max-w-3xl mx-auto">
+                تطبيق موبايل / نظام مخصص / أمان / أتمتة… يتم تسعيره بعد تحديد النطاق والنتيجة المطلوبة.
               </p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 text-right">
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="w-6 h-6 text-success-500 flex-shrink-0 mt-1" />
-                  <div>
-                    <h4 className="font-bold text-secondary-900 dark:text-white mb-1">فاتورة سعر مفصلة</h4>
-                    <p className="text-sm text-secondary-600 dark:text-secondary-300">حسب حجم ومتطلبات مشروعك</p>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 text-right">
+                {[
+                  { title: 'فاتورة سعر مفصلة', desc: 'حسب المتطلبات ونطاق التنفيذ' },
+                  { title: 'جدول زمني واضح', desc: 'مراحل + تسليمات قابلة للقياس' },
+                  { title: 'تفصيل تقني', desc: 'Tech stack + حدود + ضمانات' },
+                ].map((x) => (
+                  <div key={x.title} className="flex items-start gap-3">
+                    <CheckCircle className="w-6 h-6 text-success-500 flex-shrink-0 mt-1" />
+                    <div>
+                      <h4 className="font-bold text-secondary-900 dark:text-white mb-1">{x.title}</h4>
+                      <p className="text-sm text-secondary-600 dark:text-secondary-300">{x.desc}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="w-6 h-6 text-success-500 flex-shrink-0 mt-1" />
-                  <div>
-                    <h4 className="font-bold text-secondary-900 dark:text-white mb-1">جدول زمني واضح</h4>
-                    <p className="text-sm text-secondary-600 dark:text-secondary-300">مراحل التنفيذ والتسليم</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="w-6 h-6 text-success-500 flex-shrink-0 mt-1" />
-                  <div>
-                    <h4 className="font-bold text-secondary-900 dark:text-white mb-1">تفصيل تقني كامل</h4>
-                    <p className="text-sm text-secondary-600 dark:text-secondary-300">التقنيات والمواصفات</p>
-                  </div>
-                </div>
+                ))}
               </div>
-              <Link to="/consultation">
-                <Button size="lg" icon={ArrowLeft}>
-                  احجز استشارة مجانية الآن
-                </Button>
-              </Link>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link to="/offer" onClick={() => pushDL('nav_click', { target: '/offer', source: 'pricing_custom' })}>
+                  <Button size="lg" icon={ArrowLeft}>
+                    افتح عرض 7 أيام
+                  </Button>
+                </Link>
+
+                <a
+                  href={WHATSAPP_LINK}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() => pushDL('lead_click', { source: 'pricing_custom_whatsapp' })}
+                >
+                  <Button size="lg" variant="outline">
+                    تواصل على واتساب
+                  </Button>
+                </a>
+              </div>
             </Card>
           </div>
         </div>
       </section>
 
+      {/* OTHER SERVICES */}
       <section className="section-padding bg-secondary-50 dark:bg-secondary-900">
         <div className="container-custom">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-secondary-900 dark:text-white mb-4">
-                خدمات أخرى
-              </h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-secondary-900 dark:text-white mb-4">خدمات أخرى</h2>
               <p className="text-lg text-secondary-600 dark:text-secondary-300">
-                لهذه الخدمات، نقدم استشارة مجانية وعرض سعر مخصص بناءً على متطلبات مشروعك
+                لهذه الخدمات: تواصل سريع على واتساب أو ابدأ بعرض 7 أيام (لو النطاق مناسب).
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {otherServices.map((service, index) => (
                 <Card key={index} className="p-6" hover>
-                  <div className="mb-3">
-                    <h3 className="text-xl font-bold text-secondary-900 dark:text-white mb-2">
-                      {service.title}
-                    </h3>
-                    <p className="text-secondary-600 dark:text-secondary-300 text-sm leading-relaxed mb-3">
-                      {service.description}
-                    </p>
-                    <div className="inline-block px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-xs font-semibold">
-                      {service.note}
-                    </div>
+                  <h3 className="text-xl font-bold text-secondary-900 dark:text-white mb-2">{service.title}</h3>
+                  <p className="text-secondary-600 dark:text-secondary-300 text-sm leading-relaxed mb-3">
+                    {service.description}
+                  </p>
+                  <div className="inline-block px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-xs font-semibold">
+                    {service.note}
+                  </div>
+
+                  <div className="mt-5 flex flex-col gap-3">
+                    <Link
+                      to="/offer"
+                      onClick={() => pushDL('nav_click', { target: '/offer', source: 'pricing_other_service', service: service.title })}
+                    >
+                      <Button className="w-full" icon={ArrowLeft}>
+                        ابدأ بعرض 7 أيام
+                      </Button>
+                    </Link>
+
+                    <a
+                      href={WHATSAPP_LINK}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={() => pushDL('lead_click', { source: 'pricing_other_service_whatsapp', service: service.title })}
+                    >
+                      <Button className="w-full" variant="outline">
+                        اسأل على واتساب
+                      </Button>
+                    </a>
                   </div>
                 </Card>
               ))}
-            </div>
-
-            <div className="mt-12 text-center">
-              <Link to="/consultation">
-                <Button size="lg" icon={ArrowLeft}>
-                  احجز استشارة للحصول على عرض سعر
-                </Button>
-              </Link>
             </div>
           </div>
         </div>
       </section>
 
+      {/* PAYMENT + GUARANTEE */}
       <section className="section-padding">
         <div className="container-custom">
           <div className="max-w-4xl mx-auto">
-            <Card className="p-12 text-center" gradient>
+            <Card className="p-10 md:p-12 text-center glass">
               <h2 className="text-3xl md:text-4xl font-bold text-secondary-900 dark:text-white mb-6">
                 شروط الدفع والضمان
               </h2>
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-right">
-                <div>
-                  <h3 className="text-xl font-bold text-secondary-900 dark:text-white mb-3">
-                    طريقة الدفع
-                  </h3>
-                  <p className="text-secondary-600 dark:text-secondary-300">
-                    50% عند البدء و50% عند التسليم النهائي
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-secondary-900 dark:text-white mb-3">
-                    الضمان
-                  </h3>
-                  <p className="text-secondary-600 dark:text-secondary-300">
-                    ضمان جودة لمدة 30-90 يوم حسب الباقة
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-secondary-900 dark:text-white mb-3">
-                    المراجعات
-                  </h3>
-                  <p className="text-secondary-600 dark:text-secondary-300">
-                    جولات مراجعة مجانية خلال فترة التطوير
-                  </p>
-                </div>
+                {[
+                  { t: 'طريقة الدفع', d: '50% عند البدء و50% عند التسليم النهائي (أو حسب الاتفاق).' },
+                  { t: 'الضمان', d: 'ضمان جودة 14–60 يوم حسب الباقة والنطاق.' },
+                  { t: 'المراجعات', d: 'جولات مراجعة مجانية ضمن النطاق المتفق عليه.' },
+                ].map((x) => (
+                  <div key={x.t}>
+                    <h3 className="text-xl font-bold text-secondary-900 dark:text-white mb-3">{x.t}</h3>
+                    <p className="text-secondary-600 dark:text-secondary-300">{x.d}</p>
+                  </div>
+                ))}
               </div>
-              <div className="mt-8">
-                <Link to="/terms">
+
+              <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+                <Link to="/terms" onClick={() => pushDL('nav_click', { target: '/terms', source: 'pricing_terms' })}>
                   <Button variant="outline" icon={ArrowLeft}>
-                    اطلع على الشروط والأحكام الكاملة
+                    الشروط والأحكام
                   </Button>
                 </Link>
+
+                <a
+                  href={WHATSAPP_LINK}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() => pushDL('lead_click', { source: 'pricing_terms_whatsapp' })}
+                >
+                  <Button variant="outline">اسأل عن التفاصيل</Button>
+                </a>
               </div>
             </Card>
           </div>
         </div>
       </section>
 
+      {/* FINAL CTA */}
       <section className="section-padding gradient-primary text-white">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              محتار في الاختيار؟
-            </h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">ابدأ الآن بدون تشتت</h2>
             <p className="text-xl mb-8 text-white/90">
-              دعنا نساعدك في اختيار الباقة المناسبة. احجز استشارة مجانية لمناقشة مشروعك ومتطلباتك
+              إمّا تفتح عرض 7 أيام وتبدأ بنطاق واضح، أو تراسلنا على واتساب لتحديد المتطلبات.
             </p>
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/consultation">
+              <Link to="/offer" onClick={() => pushDL('nav_click', { target: '/offer', source: 'pricing_footer' })}>
                 <Button size="lg" variant="secondary" icon={ArrowLeft}>
-                  احجز استشارة مجانية
+                  افتح عرض 7 أيام
                 </Button>
               </Link>
-              <Link to="/contact">
-                <Button size="lg" variant="outline" icon={ArrowLeft}>
-                  تواصل معنا
+
+              <a
+                href={WHATSAPP_LINK}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => pushDL('lead_click', { source: 'pricing_footer_whatsapp' })}
+              >
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-white/70 text-white bg-white/10 hover:bg-white/20 hover:text-white hover:border-white/90"
+                >
+                  تواصل على واتساب
                 </Button>
-              </Link>
+              </a>
             </div>
           </div>
         </div>
