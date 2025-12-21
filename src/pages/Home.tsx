@@ -1,60 +1,66 @@
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Code2, Smartphone, Server, Shield, Zap, Users, Award, TrendingUp, CheckCircle } from 'lucide-react';
+import {
+  ArrowLeft,
+  Code2,
+  Smartphone,
+  Server,
+  Shield,
+  Zap,
+  Users,
+  Award,
+  TrendingUp,
+  CheckCircle,
+} from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 
 export function Home() {
+  // ====== PHASE 1 CONFIG (EDIT THESE ONLY) ======
+  const WHATSAPP_PHONE = '201234567890'; // TODO: put your real number (Egypt example)
+  const WHATSAPP_PREFILL = encodeURIComponent(
+    [
+      'عايز عرض (موقع شغال خلال 7 أيام).',
+      '',
+      'اسم المشروع:',
+      'نوع المشروع (شركة/متجر/عيادة/شخصي):',
+      'الهدف (مبيعات/تعريف/حجز):',
+      'الصفحات المطلوبة:',
+      'هل لديك دومين/استضافة؟',
+      'الميزانية المتوقعة:',
+      'موعد الإطلاق:',
+    ].join('\n')
+  );
+  const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_PHONE}?text=${WHATSAPP_PREFILL}`;
+
   const services = [
-    {
-      icon: Code2,
-      title: 'تطوير المواقع',
-      description: 'مواقع حديثة وسريعة بتقنيات متقدمة'
-    },
-    {
-      icon: Smartphone,
-      title: 'تطبيقات الموبايل',
-      description: 'تطبيقات أصلية ومتعددة المنصات'
-    },
-    {
-      icon: Server,
-      title: 'الأنظمة المخصصة',
-      description: 'حلول برمجية تناسب احتياجاتك'
-    },
-    {
-      icon: Shield,
-      title: 'الأمن السيبراني',
-      description: 'اختبارات اختراق وتحليل ثغرات'
-    },
-    {
-      icon: Zap,
-      title: 'الأتمتة',
-      description: 'سكربتات وحلول لأتمتة الأعمال'
-    },
-    {
-      icon: Users,
-      title: 'استشارات تقنية',
-      description: 'توجيه تقني واستشارات متخصصة'
-    },
+    { icon: Code2, title: 'تطوير المواقع', description: 'مواقع حديثة وسريعة بتقنيات متقدمة' },
+    { icon: Smartphone, title: 'تطبيقات الموبايل', description: 'تطبيقات أصلية ومتعددة المنصات' },
+    { icon: Server, title: 'الأنظمة المخصصة', description: 'حلول برمجية تناسب احتياجاتك' },
+    { icon: Shield, title: 'الأمن السيبراني', description: 'اختبارات اختراق وتحليل ثغرات' },
+    { icon: Zap, title: 'الأتمتة', description: 'سكربتات وحلول لأتمتة الأعمال' },
+    { icon: Users, title: 'استشارات تقنية', description: 'توجيه تقني واستشارات متخصصة' },
   ];
 
+  // NOTE: ديموهات = خطر على الثقة لو اتكشف أنها وهمية.
+  // خليها "نماذج" فقط أو اربطها بلينكات حقيقية لما تتوفر.
   const projects = [
     {
       title: 'منصة Fintech',
       category: 'التقنية المالية',
       description: 'منصة مالية متكاملة لإدارة المدفوعات والمحافظ الرقمية',
-      tech: ['React', 'Node.js', 'PostgreSQL']
+      tech: ['React', 'Node.js', 'PostgreSQL'],
     },
     {
       title: 'نظام إدارة المحتوى',
       category: 'SaaS',
       description: 'نظام CMS متقدم مع لوحة تحكم قوية وإدارة محتوى ديناميكية',
-      tech: ['Next.js', 'Supabase', 'TypeScript']
+      tech: ['Next.js', 'Supabase', 'TypeScript'],
     },
     {
       title: 'متجر إلكتروني',
       category: 'E-commerce',
       description: 'منصة تجارة إلكترونية كاملة مع نظام دفع آمن',
-      tech: ['React', 'Express', 'MongoDB']
+      tech: ['React', 'Express', 'MongoDB'],
     },
   ];
 
@@ -64,24 +70,25 @@ export function Home() {
       role: 'مدير تقني',
       company: 'TechStart',
       content: 'فريق icode قدم لنا حلولاً تقنية متقدمة فاقت توقعاتنا. الاحترافية والجودة واضحة في كل تفصيل.',
-      rating: 5
+      rating: 5,
     },
     {
       name: 'سارة العلي',
       role: 'مؤسسة',
       company: 'Digital Solutions',
       content: 'تجربة رائعة من البداية للنهاية. التواصل ممتاز والتسليم في الوقت المحدد.',
-      rating: 5
+      rating: 5,
     },
     {
       name: 'خالد السعيد',
       role: 'صاحب شركة',
       company: 'E-Shop Pro',
       content: 'بنوا لنا متجراً إلكترونياً احترافياً ساهم في زيادة مبيعاتنا بنسبة 300%.',
-      rating: 5
+      rating: 5,
     },
   ];
 
+  // خلي الأرقام واقعية. لو مش متأكد، استبدلها بـ "قيمة" بدل رقم.
   const stats = [
     { value: '150+', label: 'مشروع منجز' },
     { value: '100+', label: 'عميل راضٍ' },
@@ -90,30 +97,15 @@ export function Home() {
   ];
 
   const workProcess = [
-    {
-      number: '01',
-      title: 'التواصل والفهم',
-      description: 'نستمع لمتطلباتك ونفهم أهدافك بدقة'
-    },
-    {
-      number: '02',
-      title: 'التخطيط والتصميم',
-      description: 'نضع خطة محكمة ونصمم الحل الأمثل'
-    },
-    {
-      number: '03',
-      title: 'التطوير والاختبار',
-      description: 'نبني المنتج بأعلى معايير الجودة'
-    },
-    {
-      number: '04',
-      title: 'الإطلاق والدعم',
-      description: 'نطلق المشروع ونقدم دعماً مستمراً'
-    },
+    { number: '01', title: 'التواصل والفهم', description: 'نستمع لمتطلباتك ونفهم أهدافك بدقة' },
+    { number: '02', title: 'التخطيط والتصميم', description: 'نضع خطة محكمة ونصمم الحل الأمثل' },
+    { number: '03', title: 'التطوير والاختبار', description: 'نبني المنتج بأعلى معايير الجودة' },
+    { number: '04', title: 'الإطلاق والدعم', description: 'نطلق المشروع ونقدم دعماً مستمراً' },
   ];
 
   return (
     <div className="min-h-screen">
+      {/* ========== HERO (PHASE 1: Conversion-first) ========== */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
         <div className="absolute inset-0 gradient-primary opacity-10 bg-noise" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/50 to-white dark:via-secondary-900/50 dark:to-secondary-900" />
@@ -127,20 +119,52 @@ export function Home() {
                   <br />
                   التي تصنع الفارق
                 </h1>
-                <p className="text-lg md:text-xl text-secondary-600 dark:text-secondary-300 mb-8 leading-relaxed animate-slide-up">
-نحوّل فكرتك لموقع شغال خلال 7 أيام أو لا تدفع شيئًا                </p>
+
+                {/* Offer + Audience */}
+                <p className="text-lg md:text-xl text-secondary-600 dark:text-secondary-300 mb-3 leading-relaxed animate-slide-up">
+                  نحوّل فكرتك لموقع شغال خلال 7 أيام — أو لا تدفع شيئًا.
+                </p>
+                <p className="text-base md:text-lg text-secondary-500 dark:text-secondary-400 mb-8 animate-slide-up animation-delay-100">
+                  مناسب للشركات الناشئة، المتاجر، العيادات، والمشاريع اللي محتاجة نتائج سريعة.
+                </p>
+
+                {/* Trust bullets (fast proof) */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8 animate-slide-up animation-delay-150">
+                  {[
+                    { icon: CheckCircle, text: 'تسليم بموعد واضح + خطة عمل' },
+                    { icon: Shield, text: 'أمان أساسي + إعدادات حماية' },
+                    { icon: Zap, text: 'سرعة عالية وتجربة مستخدم محسّنة' },
+                    { icon: Award, text: 'كود نظيف ومعايير صناعية' },
+                  ].map((b, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center gap-2 justify-center lg:justify-start text-secondary-700 dark:text-secondary-200"
+                    >
+                      <b.icon className="w-5 h-5 text-primary-600" />
+                      <span className="text-sm md:text-base">{b.text}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* CTAs: WhatsApp first, then consultation */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-slide-up animation-delay-200">
-                  <Link to="/contact">
+                  <a href={WHATSAPP_LINK} target="_blank" rel="noreferrer">
                     <Button size="lg" icon={ArrowLeft}>
-                      ابدأ مشروعك الآن
+                      ابدأ على واتساب الآن
                     </Button>
-                  </Link>
+                  </a>
+
                   <Link to="/consultation">
                     <Button size="lg" variant="outline">
                       احجز استشارة مجانية
                     </Button>
                   </Link>
                 </div>
+
+                {/* Micro-constraint to filter junk leads */}
+                <p className="mt-5 text-sm text-secondary-500 dark:text-secondary-400">
+                  ملاحظة: قبل البدء بنحدد النطاق والميزانية بوضوح لتجنب إهدار الوقت.
+                </p>
               </div>
 
               <div className="order-1 lg:order-2 flex items-center justify-center">
@@ -159,6 +183,7 @@ export function Home() {
         </div>
       </section>
 
+      {/* ========== WHY US ========== */}
       <section className="section-padding bg-secondary-50 dark:bg-secondary-900">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center mb-16">
@@ -186,15 +211,14 @@ export function Home() {
                 <h3 className="text-xl font-bold text-secondary-900 dark:text-white mb-3">
                   {item.title}
                 </h3>
-                <p className="text-secondary-600 dark:text-secondary-300">
-                  {item.desc}
-                </p>
+                <p className="text-secondary-600 dark:text-secondary-300">{item.desc}</p>
               </Card>
             ))}
           </div>
         </div>
       </section>
 
+      {/* ========== SERVICES ========== */}
       <section className="section-padding">
         <div className="container-custom">
           <div className="text-center mb-16">
@@ -230,15 +254,12 @@ export function Home() {
         </div>
       </section>
 
+      {/* ========== PROCESS ========== */}
       <section className="section-padding bg-secondary-900 text-white">
         <div className="container-custom">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              طريقة عملنا
-            </h2>
-            <p className="text-xl text-secondary-300">
-              منهجية واضحة وشفافة في كل مرحلة
-            </p>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">طريقة عملنا</h2>
+            <p className="text-xl text-secondary-300">منهجية واضحة وشفافة في كل مرحلة</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -255,6 +276,7 @@ export function Home() {
         </div>
       </section>
 
+      {/* ========== PROJECTS ========== */}
       <section className="section-padding">
         <div className="container-custom">
           <div className="text-center mb-16">
@@ -305,6 +327,7 @@ export function Home() {
         </div>
       </section>
 
+      {/* ========== TESTIMONIALS ========== */}
       <section className="section-padding bg-secondary-50 dark:bg-secondary-900">
         <div className="container-custom">
           <div className="text-center mb-16">
@@ -321,16 +344,16 @@ export function Home() {
               <Card key={index} className="p-8" hover>
                 <div className="flex gap-1 mb-6">
                   {[...Array(testimonial.rating)].map((_, i) => (
-                    <span key={i} className="text-2xl text-accent-500">★</span>
+                    <span key={i} className="text-2xl text-accent-500">
+                      ★
+                    </span>
                   ))}
                 </div>
                 <p className="text-secondary-700 dark:text-secondary-300 leading-relaxed mb-6">
                   "{testimonial.content}"
                 </p>
                 <div>
-                  <p className="font-bold text-secondary-900 dark:text-white">
-                    {testimonial.name}
-                  </p>
+                  <p className="font-bold text-secondary-900 dark:text-white">{testimonial.name}</p>
                   <p className="text-secondary-600 dark:text-secondary-400 text-sm">
                     {testimonial.role} - {testimonial.company}
                   </p>
@@ -341,23 +364,21 @@ export function Home() {
         </div>
       </section>
 
+      {/* ========== STATS ========== */}
       <section className="section-padding gradient-primary text-white">
         <div className="container-custom">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="text-5xl md:text-6xl font-bold mb-2">
-                  {stat.value}
-                </div>
-                <div className="text-lg text-white/80">
-                  {stat.label}
-                </div>
+                <div className="text-5xl md:text-6xl font-bold mb-2">{stat.value}</div>
+                <div className="text-lg text-white/80">{stat.label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* ========== FINAL CTA (WhatsApp-first) ========== */}
       <section className="section-padding">
         <div className="container-custom">
           <Card className="p-12 md:p-16 text-center" glass>
@@ -365,14 +386,14 @@ export function Home() {
               جاهز لبدء مشروعك؟
             </h2>
             <p className="text-xl text-secondary-600 dark:text-secondary-300 mb-8 max-w-2xl mx-auto">
-              دعنا نحول أفكارك إلى واقع رقمي متميز. تواصل معنا اليوم واحصل على استشارة مجانية
+              تواصل معنا الآن واحصل على استشارة مجانية وخطة تنفيذ واضحة قبل ما تدفع جنيه.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/contact">
+              <a href={WHATSAPP_LINK} target="_blank" rel="noreferrer">
                 <Button size="lg" icon={ArrowLeft}>
-                  تواصل معنا الآن
+                  ابدأ على واتساب الآن
                 </Button>
-              </Link>
+              </a>
               <Link to="/pricing">
                 <Button size="lg" variant="outline">
                   اطلع على الأسعار
