@@ -376,4 +376,3 @@ export function Offer() {
 // <Link to="/offer">
 //   <Button size="lg" variant="outline">شوف العرض السريع</Button>
 // </Link>
-
