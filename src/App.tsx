@@ -1,6 +1,6 @@
-// src/App.tsx  (FULL UPDATED)
+// src/App.tsx (FULL UPDATED — includes FloatingWhatsApp mounted + no overlap + clean 404)
 
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
@@ -20,13 +20,10 @@ import { Consultation } from './pages/Consultation';
 import { Terms } from './pages/Terms';
 import { Offers } from './pages/Offers';
 import { Portal } from './pages/Portal';
-
-// NEW: Offer (single killer offer page)
 import { Offer } from './pages/Offer';
 
 import SEO from './seo';
 
-// ---- Tracking helpers (GA4 via GTM + Meta Pixel optional) ----
 declare global {
   interface Window {
     dataLayer?: unknown[];
@@ -48,7 +45,21 @@ function App() {
 
         <ScrollToTop />
         <ProgressBar />
+
+        {/* GLOBAL CTAs */}
         <BackToTop />
+        <FloatingWhatsApp
+          phone="201507619503"
+          prefill={[
+            'عايز أبدأ مشروع.',
+            '',
+            'نوع المشروع:',
+            'الميزانية:',
+            'موعد الإطلاق:',
+            'تفاصيل مختصرة:',
+          ].join('\n')}
+          position="left"
+        />
 
         <div className="min-h-screen flex flex-col">
           <Header />
@@ -65,20 +76,12 @@ function App() {
                 <Route path="/consultation" element={<Consultation />} />
                 <Route path="/terms" element={<Terms />} />
 
-                {/* موجودة عندك */}
                 <Route path="/offers" element={<Offers />} />
-
-                {/* NEW: صفحة عرض واحد /offer */}
-                <Route
-                  path="/offer"
-                  element={
-                    <Offer />
-                  }
-                />
+                <Route path="/offer" element={<Offer />} />
 
                 <Route path="/portal" element={<Portal />} />
 
-                {/* OPTIONAL: 404 */}
+                {/* 404 */}
                 <Route
                   path="*"
                   element={
@@ -90,12 +93,13 @@ function App() {
                         <p className="text-secondary-600 dark:text-secondary-300 mb-6">
                           تحقق من الرابط أو ارجع للرئيسية.
                         </p>
-                        <a
-                          href="/"
+                        <Link
+                          to="/"
+                          className="inline-flex items-center justify-center px-6 py-3 rounded-xl font-semibold border border-secondary-200 dark:border-secondary-700 hover:bg-secondary-50 dark:hover:bg-secondary-800 transition"
                           onClick={() => pushDL('nav_click', { target: 'home_from_404' })}
                         >
                           رجوع للرئيسية
-                        </a>
+                        </Link>
                       </div>
                     </div>
                   }
